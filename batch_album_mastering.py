@@ -1,3 +1,4 @@
+import os
 import requests
 import json
 import time
@@ -5,6 +6,22 @@ import time
 # BASE_URL points to the API host. Replace it with your actual API host if different.
 BASE_URL = "https://tonn.roexaudio.com"
 API_KEY = "GO TO https://tonn-portal.roexaudio.com get an API key"
+
+
+def download_file(url, local_filename):
+    """
+    Downloads a file from the provided URL and saves it locally.
+    """
+    try:
+        with requests.get(url, stream=True) as r:
+            r.raise_for_status()
+            with open(local_filename, 'wb') as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    f.write(chunk)
+        print(f"Downloaded file to {local_filename}")
+    except Exception as e:
+        print(f"Error downloading file from {url}: {e}")
+
 
 def poll_preview_master(task_id, headers, max_attempts=30, poll_interval=5):
     """
@@ -121,15 +138,15 @@ def retrieve_final_master(task_id, headers):
 
 def main():
     """
-    Main function to batch-master an entire album.
+    Main function to batch-master an entire album and download each final master.
 
-    This script expects a JSON file (e.g., 'album_mastering_payload.json') containing
-    an array of tracks to master. For each track, it does:
-        1. POST to /masteringpreview to create a preview task.
-        2. Poll /retrievepreviewmaster until the preview is ready.
-        3. Print the preview download URL.
-        4. POST to /retrievefinalmaster to get the final full master URL.
-        5. Print the final master download URL.
+    This script expects a JSON file (e.g. 'album_mastering_payload.json') containing
+    an array of tracks to master. For each track, it:
+        1. POSTs to /masteringpreview to create a preview task.
+        2. Polls /retrievepreviewmaster until the preview is ready (unless you use webhooks).
+        3. Prints the preview download URL.
+        4. POSTs to /retrievefinalmaster to get the final full master URL.
+        5. Downloads the final master to disk.
 
     Example of album_mastering_payload.json:
     [
@@ -143,8 +160,8 @@ def main():
       {
         "trackURL": "https://example.com/path/to/track2.flac",
         "musicalStyle": "POP",
-        "desiredLoudness": "MEDIUM",
-        "sampleRate": "44100",
+        "desiredLoudness": "HIGH",
+        "sampleRate": "48000",
         "webhookURL": "https://yourwebhook.example.com/track2"
       }
     ]
@@ -163,6 +180,10 @@ def main():
         "Content-Type": "application/json",
         "x-api-key": API_KEY
     }
+
+    # Create an output directory for final masters (optional).
+    output_dir = "final_masters"
+    os.makedirs(output_dir, exist_ok=True)
 
     for idx, track_data in enumerate(album_tracks, start=1):
         print("=" * 60)
@@ -200,7 +221,7 @@ def main():
                 if not mastering_task_id:
                     print("Error: mastering_task_id not found in response:", data)
                     continue
-                print("Preview mastering task created successfully. Task ID:", mastering_task_id)
+                print(f"Preview mastering task created successfully. Task ID: {mastering_task_id}")
             except Exception as e:
                 print("Error parsing preview mastering JSON response:", e)
                 continue
@@ -233,8 +254,24 @@ def main():
             print("Failed to retrieve final master for this track.")
             continue
 
-        # 5. Print the final mastered track URL
-        print("Final Mastered Track URL:", final_results)
+        # final_results should be the download URL for the final master
+        final_download_url = final_results
+        if not final_download_url:
+            print("No final download URL returned.")
+            continue
+
+        # Extract the URL string:
+        final_download_url = final_results.get("download_url_mastered")
+
+        # 5. Download the final master locally.
+        # We name the file "final_master_track_{idx}.wav" (or .mp3, etc.):
+        if not final_download_url:
+            print("Error: final download URL not found in final_results!")
+        else:
+            print("Final Mastered Track URL:", final_download_url)
+            # Pass the URL (string) to your download method:
+            local_filename = os.path.join(output_dir, f"final_master_track_{idx}.wav")
+            download_file(final_download_url, local_filename)
 
         print(f"Finished mastering for Track #{idx}.\n")
 
