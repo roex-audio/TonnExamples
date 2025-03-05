@@ -1,0 +1,23 @@
+[
+      {
+        "trackURL": "https://storage.googleapis.com/test-bucket-api-roex/album/audio_track_1.mp3",
+        "musicalStyle": "ACOUSTIC",
+        "desiredLoudness": "MEDIUM",
+        "sampleRate": "44100",
+        "webhookURL": "https://webhook-test-786984745538.europe-west1.run.app"
+      },
+      {
+        "trackURL": "https://storage.googleapis.com/test-bucket-api-roex/album/audio_track_1.mp3",
+        "musicalStyle": "ROCK_INDIE",
+        "desiredLoudness": "MEDIUM",
+        "sampleRate": "44100",
+        "webhookURL": "https://webhook-test-786984745538.europe-west1.run.app"
+      },
+      {
+        "trackURL": "https://storage.googleapis.com/test-bucket-api-roex/album/audio_track_1.mp3",
+        "musicalStyle": "ELECTRONIC",
+        "desiredLoudness": "MEDIUM",
+        "sampleRate": "44100",
+        "webhookURL": "https://webhook-test-786984745538.europe-west1.run.app"
+      }
+    ]

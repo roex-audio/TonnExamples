@@ -38,6 +38,6 @@
       }
     ],
     "musicalStyle": "ELECTRONIC",
-    "webhookURL": "https://us-central1-united-masters.cloudfunctions.net/webhook-test"
+    "webhookURL": "https://webhook-test-786984745538.europe-west1.run.app"
   }
 }
