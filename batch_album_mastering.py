@@ -11,11 +11,17 @@ API_KEY = "GO TO https://tonn-portal.roexaudio.com get an API key"
 def download_file(url, local_filename):
     """
     Downloads a file from the provided URL and saves it locally.
+
+    Args:
+        url (str): The direct URL to the file to be downloaded.
+        local_filename (str): The file path where the downloaded file will be saved.
     """
     try:
+        # We use a 'stream=True' request to handle large files in chunks.
         with requests.get(url, stream=True) as r:
-            r.raise_for_status()
+            r.raise_for_status()  # Raises an HTTPError if the response wasn't 2xx.
             with open(local_filename, 'wb') as f:
+                # Write the response content in chunks of 8192 bytes to avoid memory overload.
                 for chunk in r.iter_content(chunk_size=8192):
                     f.write(chunk)
         print(f"Downloaded file to {local_filename}")
@@ -28,22 +34,22 @@ def poll_preview_master(task_id, headers, max_attempts=30, poll_interval=5):
     Poll the /retrievepreviewmaster endpoint until the preview master is ready.
 
     This function sends a POST request with the mastering task ID to the /retrievepreviewmaster
-    endpoint. It will repeatedly poll the endpoint until either the preview master is ready
-    (status code 200) or the maximum number of attempts is reached.
+    endpoint. It will repeatedly poll the endpoint until the preview master is ready (status 200)
+    or until the maximum number of attempts is reached.
 
-    NOTE: If you provide a webhookURL in the payload when creating the mastering preview,
-    the API will send a callback to that URL once the preview is ready. In that case, you wouldn't
-    need to poll this endpoint manually. Polling is used here for demonstration purposes.
+    NOTE: If you provided a webhookURL in the payload to /masteringpreview, you can rely on
+    the webhook notification instead of polling.
 
     Args:
-        task_id (str): The mastering task ID returned from the /masteringpreview endpoint.
-        headers (dict): HTTP headers including Content-Type and API key.
-        max_attempts (int): Maximum number of polling attempts.
-        poll_interval (int): Seconds to wait between attempts.
+        task_id (str): The ID from /masteringpreview that identifies the preview mastering task.
+        headers (dict): A dictionary of HTTP headers, including the API key.
+        max_attempts (int): The maximum number of times we'll poll before giving up.
+        poll_interval (int): Seconds to wait between each polling attempt.
 
     Returns:
-        dict or None: The preview master task results if ready, else None.
+        dict or None: Dictionary of preview master results if ready, otherwise None.
     """
+    # Construct the endpoint and request payload.
     retrieve_url = f"{BASE_URL}/retrievepreviewmaster"
     retrieve_payload = {
         "masteringData": {
@@ -53,60 +59,68 @@ def poll_preview_master(task_id, headers, max_attempts=30, poll_interval=5):
 
     print(f"Polling for preview master with task ID: {task_id}")
     for attempt in range(max_attempts):
+        # Attempt to call the /retrievepreviewmaster endpoint.
         try:
             response = requests.post(retrieve_url, json=retrieve_payload, headers=headers)
         except Exception as e:
             print("Error during POST request to /retrievepreviewmaster:", e)
             return None
 
+        # If the API responds with 202, the task is still processing.
         if response.status_code == 202:
-            # Still processing, parse the status if provided
+            # We can parse the JSON to check the current status message (if provided).
             try:
                 data = response.json()
                 current_status = data.get("status", "Processing")
             except Exception:
                 current_status = "Processing"
             print(f"Attempt {attempt + 1}/{max_attempts}: Task still processing (Status: {current_status}).")
+
+        # If the API responds with 200, the preview master should be ready.
         elif response.status_code == 200:
             try:
                 data = response.json()
                 preview_results = data.get("previewMasterTaskResults")
-                # If the preview master is ready, we assume the necessary keys exist
+                # Check if the relevant key is present.
                 if preview_results:
                     print("Preview master is complete.")
                     return preview_results
                 else:
-                    print("Received 200 but missing 'previewMasterTaskResults' in response.")
+                    print("Received 200 but missing 'previewMasterTaskResults' in the response.")
                     return None
             except Exception as e:
                 print("Error parsing JSON response:", e)
                 return None
+
         else:
+            # Handle unexpected status codes.
             print("Unexpected response code:", response.status_code)
             print("Response:", response.text)
             return None
 
+        # Wait before next attempt if not yet ready.
         time.sleep(poll_interval)
 
+    # If we reach here, the preview master didn't become ready in time.
     print("Preview master was not available after polling. Please try again later.")
     return None
 
 
 def retrieve_final_master(task_id, headers):
     """
-    Call the /retrievefinalmaster endpoint to retrieve the final master.
+    Calls the /retrievefinalmaster endpoint to retrieve the final master.
 
-    This function sends a POST request to the /retrievefinalmaster endpoint
-    with the provided task ID. It expects a 200 status code and returns the
-    final master task results if successful.
+    This function sends a POST request to the /retrievefinalmaster endpoint with the given
+    task_id. It should return the final mastered track’s URL if successful.
 
     Args:
-        task_id (str): The mastering task ID returned from the /masteringpreview endpoint.
+        task_id (str): The mastering task ID returned from /masteringpreview.
         headers (dict): HTTP headers including Content-Type and API key.
 
     Returns:
         dict or None: The final master task results if ready, else None.
     """
+    # Construct the request URL and payload.
     retrieve_url = f"{BASE_URL}/retrievefinalmaster"
     final_payload = {
         "masteringData": {
@@ -121,6 +135,7 @@ def retrieve_final_master(task_id, headers):
         print("Error during POST request to /retrievefinalmaster:", e)
         return None
 
+    # Status code 200 means success in retrieving the final master.
     if response.status_code == 200:
         try:
             data = response.json()
@@ -130,6 +145,7 @@ def retrieve_final_master(task_id, headers):
             print("Error parsing final master JSON response:", e)
             return None
     else:
+        # Any code other than 200 indicates some error or missing info.
         print("Failed to retrieve final master.")
         print("Status code:", response.status_code)
         print("Response:", response.text)
@@ -141,12 +157,12 @@ def main():
     Main function to batch-master an entire album and download each final master.
 
     This script expects a JSON file (e.g. 'album_mastering_payload.json') containing
-    an array of tracks to master. For each track, it:
-        1. POSTs to /masteringpreview to create a preview task.
-        2. Polls /retrievepreviewmaster until the preview is ready (unless you use webhooks).
-        3. Prints the preview download URL.
-        4. POSTs to /retrievefinalmaster to get the final full master URL.
-        5. Downloads the final master to disk.
+    an array of track objects to master. For each track:
+        1. POST to /masteringpreview to create a preview task.
+        2. Poll /retrievepreviewmaster until the preview is ready (unless you have a webhook).
+        3. Print the preview download URL.
+        4. POST to /retrievefinalmaster to get the final full master URL.
+        5. Download the final master to disk.
 
     Example of album_mastering_payload.json:
     [
@@ -167,7 +183,8 @@ def main():
     ]
     """
     input_file = "./album_mastering_payload.json"
-    # Load the album tracks from JSON
+
+    # Attempt to load the album tracks data from a JSON file.
     try:
         with open(input_file, "r") as f:
             album_tracks = json.load(f)
@@ -175,21 +192,23 @@ def main():
         print(f"Error reading {input_file}:", e)
         return
 
-    # Define HTTP headers with the API key.
+    # Define HTTP headers, including our API key.
     headers = {
         "Content-Type": "application/json",
         "x-api-key": API_KEY
     }
 
-    # Create an output directory for final masters (optional).
+    # Create an output directory to store final masters (optional).
     output_dir = "final_masters"
     os.makedirs(output_dir, exist_ok=True)
 
+    # Loop through each track in the album data.
     for idx, track_data in enumerate(album_tracks, start=1):
         print("=" * 60)
         print(f"Starting mastering for Track #{idx}")
 
-        # Construct the payload for /masteringpreview
+        # Build the payload that will be sent to /masteringpreview.
+        # We gather the info from the track_data JSON object.
         mastering_payload = {
             "masteringData": {
                 "trackData": [
@@ -199,13 +218,13 @@ def main():
                 ],
                 "musicalStyle": track_data["musicalStyle"],
                 "desiredLoudness": track_data["desiredLoudness"],
-                # sampleRate is optional; default is 44100 if not provided.
+                # sampleRate is optional; if not provided, API defaults to 44100.
                 "sampleRate": track_data.get("sampleRate", "44100"),
                 "webhookURL": track_data["webhookURL"]
             }
         }
 
-        # 1. Create the preview mastering task
+        # 1. Send a POST request to /masteringpreview to create a preview task.
         preview_url = f"{BASE_URL}/masteringpreview"
         print("Creating preview mastering task...")
         try:
@@ -214,6 +233,7 @@ def main():
             print("Error during POST request to /masteringpreview:", e)
             continue
 
+        # If successful, we should get 200 + a JSON response containing 'mastering_task_id'.
         if response.status_code == 200:
             try:
                 data = response.json()
@@ -226,50 +246,44 @@ def main():
                 print("Error parsing preview mastering JSON response:", e)
                 continue
         else:
+            # If we didn’t get a 200, something went wrong (e.g., invalid data or missing fields).
             print("Failed to create preview mastering task.")
             print("Status code:", response.status_code)
             print("Response:", response.text)
             continue
 
-        # 2. Poll /retrievepreviewmaster for the preview to be ready
+        # 2. Poll the /retrievepreviewmaster endpoint until the preview is ready (or times out).
         preview_results = poll_preview_master(mastering_task_id, headers)
         if not preview_results:
+            # If preview never became ready, we skip trying to finalize this track.
             print("Preview not ready. Skipping final mastering for this track.")
             continue
 
-        # 3. Print the preview mastered track URL
+        # 3. Print the preview master's URL if available.
         preview_download_url = preview_results.get("download_url_mastered_preview")
         if preview_download_url:
             print("Preview mastered track URL:", preview_download_url)
         else:
             print("Missing 'download_url_mastered_preview' in preview results.")
 
-        # Some APIs also provide additional metadata like 'preview_start_time'.
+        # Show the preview start time if provided (some APIs might return a different number or -1).
         preview_start_time = preview_results.get("preview_start_time", -1)
         print("Preview start time:", preview_start_time)
 
-        # 4. Retrieve the final mastered track
+        # 4. Retrieve the final mastered track by calling /retrievefinalmaster.
         final_results = retrieve_final_master(mastering_task_id, headers)
         if not final_results:
             print("Failed to retrieve final master for this track.")
             continue
 
-        # final_results should be the download URL for the final master
-        final_download_url = final_results
-        if not final_download_url:
-            print("No final download URL returned.")
-            continue
-
-        # Extract the URL string:
+        # final_results should contain the final mastering download URL under "download_url_mastered".
         final_download_url = final_results.get("download_url_mastered")
-
-        # 5. Download the final master locally.
-        # We name the file "final_master_track_{idx}.wav" (or .mp3, etc.):
         if not final_download_url:
             print("Error: final download URL not found in final_results!")
         else:
             print("Final Mastered Track URL:", final_download_url)
-            # Pass the URL (string) to your download method:
+
+            # 5. Download the final master locally to "final_masters/final_master_track_{idx}.wav"
             local_filename = os.path.join(output_dir, f"final_master_track_{idx}.wav")
             download_file(final_download_url, local_filename)
 
@@ -278,5 +292,6 @@ def main():
     print("All done!")
 
 
+# Standard Python entry point for script execution.
 if __name__ == "__main__":
     main()
