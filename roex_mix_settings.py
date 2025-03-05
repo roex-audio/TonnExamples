@@ -1,6 +1,5 @@
 import requests
 import json
-import argparse
 import time
 
 # BASE_URL points to the API host. Replace it with your actual API host if different.
