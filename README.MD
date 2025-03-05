@@ -136,3 +136,120 @@ By following these steps, you can effortlessly automate professional-quality mix
 - Adjust **track levels** to refine the final mix.
 
 Whether you're developing a music app or mixing tracks at scale, this API streamlines your workflow. For more customization, check out the full API documentation!
+
+---
+
+
+# Tutorial - Tonn API: Batch Mastering Your EP or Album
+
+When releasing an EP or album independently, achieving consistent sound quality and loudness across tracks can be challenging and time-consuming. Automating the mastering process not only saves time but ensures sonic consistency throughout your project, providing listeners with a cohesive experience. Batch mastering is just one of the many powerful uses of the Tonn API, designed to streamline various audio production workflows.
+
+## Why Batch Mastering?
+
+Mastering an album or EP track-by-track can lead to inconsistent loudness levels and sonic character, causing your project to lose coherence. Batch mastering allows you to set consistent mastering parameters across your entire project, ensuring uniform loudness, style, and sound quality.
+
+## Getting Started
+
+### Prerequisites
+
+Before you begin, you'll need:
+
+- Python installed on your machine ([Download here](https://www.python.org/downloads/))
+- The `requests` Python package (`pip install requests`)
+- An API key from [Tonn API Portal](https://tonn-portal.roexaudio.com)
+
+## Preparing Your Tracks
+
+Create a JSON file named `album_mastering_payload.json`. Each track requires:
+
+- `trackURL`: URL of your track file (WAV, MP3, or FLAC).
+- `musicalStyle`: Genre-specific mastering preset (e.g., ROCK_INDIE, POP, ELECTRONIC).
+- `desiredLoudness`: Desired loudness level (LOW, MEDIUM, or HIGH).
+- `sampleRate`: Optional, defaults to "44100".
+- `webhookURL`: URL to receive API callbacks (useful for automated systems).
+
+Here's an example:
+
+```json
+[
+  {
+    "trackURL": "https://example.com/track1.wav",
+    "musicalStyle": "ROCK_INDIE",
+    "desiredLoudness": "MEDIUM",
+    "sampleRate": "44100",
+    "webhookURL": "https://yourwebhook.com/track1"
+  },
+  {
+    "trackURL": "https://example.com/track2.flac",
+    "musicalStyle": "POP",
+    "desiredLoudness": "HIGH",
+    "sampleRate": "48000",
+    "webhookURL": "https://yourwebhook.example.com/track2"
+  }
+]
+```
+
+## Python Script for Batch Mastering
+
+Place this Python script (`batch_master_album.py`) in the same directory as your JSON file:
+
+### Python Script Explanation
+
+This script automates:
+- Creating mastering tasks
+- Polling the API until your previews are ready
+- Retrieving and downloading your final mastered tracks
+
+### Script Usage
+
+Replace `API_KEY` with your API key from Tonn.
+
+```python
+import os
+import requests
+import json
+import time
+
+BASE_URL = "https://tonn.roexaudio.com"
+API_KEY = "YOUR_API_KEY_HERE"
+
+# (Include the functions provided earlier: download_file, poll_preview_master, retrieve_final_master)
+
+# See the provided code snippet in this tutorial's earlier sections.
+
+# Main function to batch master an EP or Album
+# (The main function from your provided code snippet goes here.)
+```
+
+### Running the Script
+
+Ensure your `album_mastering_payload.json` is correctly filled out, and then run:
+
+```bash
+python batch_master_album.py
+```
+
+This script will:
+
+- Start mastering each track (preview first).
+- Poll regularly until the preview is ready.
+- Retrieve the preview URL for you to check the mastering quality.
+- Automatically download each final mastered track into a directory named `final_masters`.
+
+## Listening & Checking Results
+
+Your mastered tracks will be downloaded into a directory named `final_masters`. It's crucial to listen critically to each mastered track and ensure they meet your expectations for loudness, tonal balance, and cohesiveness.
+
+## Tips for Optimal Results
+
+- **Consistent Loudness**: Choose the same loudness level (`MEDIUM` is typically industry-standard at around -14 LUFS) across all tracks for a cohesive listening experience.
+- **Musical Style Accuracy**: Carefully select the musical style to match your project accurately; this ensures genre-specific optimizations are applied.
+- **Sample Rate Considerations**: Choose `44100` Hz (standard CD/audio distribution) or `48000` Hz (typical for video production and higher-resolution streaming).
+
+## Explore More with Tonn API
+
+Batch mastering is just one of many use-cases available with the Tonn API. You can also leverage Tonn to automate audio mixing, generate previews, handle multitrack projects, and integrate professional-quality audio processing into your custom applications and workflows.
+
+## Conclusion
+
+Batch mastering your EP or album ensures a unified and professional sound, making your music stand out to listeners and industry professionals alike. By using the provided Python script and Tonn’s mastering API, you can achieve professional-quality mastering efficiently, freeing up your time to focus on creativity and promotion.
