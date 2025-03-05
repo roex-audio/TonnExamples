@@ -1,0 +1,43 @@
+{
+  "multitrackData": {
+    "trackData": [
+      {
+        "trackURL": "https://storage.googleapis.com/test-bucket-api-roex/masks_test/masks-bass.wav",
+        "instrumentGroup": "BASS_GROUP",
+        "presenceSetting": "NORMAL",
+        "panPreference": "CENTRE",
+        "reverbPreference" : "NONE"
+      },
+      {
+        "trackURL": "https://storage.googleapis.com/test-bucket-api-roex/masks_test/masks-chord.wav",
+        "instrumentGroup": "SYNTH_GROUP",
+        "presenceSetting": "LEAD",
+        "panPreference": "CENTRE",
+        "reverbPreference" : "NONE"
+      },
+      {
+        "trackURL": "https://storage.googleapis.com/test-bucket-api-roex/masks_test/masks-kick.wav",
+        "instrumentGroup": "KICK_GROUP",
+        "presenceSetting": "NORMAL",
+        "panPreference": "CENTRE",
+        "reverbPreference" : "NONE"
+      },
+      {
+        "trackURL": "https://storage.googleapis.com/test-bucket-api-roex/masks_test/masks-percssion.wav",
+        "instrumentGroup": "PERCS_GROUP",
+        "presenceSetting": "NORMAL",
+        "panPreference": "CENTRE",
+        "reverbPreference" : "NONE"
+      },
+      {
+        "trackURL": "https://storage.googleapis.com/test-bucket-api-roex/masks_test/masks-synth.wav",
+        "instrumentGroup": "SYNTH_GROUP",
+        "presenceSetting": "BACKGROUND",
+        "panPreference": "CENTRE",
+        "reverbPreference" : "NONE"
+      }
+    ],
+    "musicalStyle": "ELECTRONIC",
+    "webhookURL": "https://us-central1-united-masters.cloudfunctions.net/webhook-test"
+  }
+}

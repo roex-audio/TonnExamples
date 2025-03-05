@@ -1,0 +1,27 @@
+{
+  "applyAudioEffectsData": {
+     "trackData": [
+      {
+        "trackURL": "https://storage.googleapis.com/test-bucket-api-roex/masks_test/masks-bass.wav",
+        "gainDb": -12
+      },
+      {
+        "trackURL": "https://storage.googleapis.com/test-bucket-api-roex/masks_test/masks-chord.wav",
+        "gainDb": 0
+      },
+      {
+        "trackURL": "https://storage.googleapis.com/test-bucket-api-roex/masks_test/masks-kick.wav",
+        "gainDb": -12
+      },
+      {
+        "trackURL": "https://storage.googleapis.com/test-bucket-api-roex/masks_test/masks-percssion.wav",
+        "gainDb": 0
+      },
+      {
+        "trackURL": "https://storage.googleapis.com/test-bucket-api-roex/masks_test/masks-synth.wav",
+        "gainDb": 0
+      }
+    ],
+    "returnStems": true
+  }
+}
