@@ -253,3 +253,115 @@ Batch mastering is just one of many use-cases available with the Tonn API. You c
 ## Conclusion
 
 Batch mastering your EP or album ensures a unified and professional sound, making your music stand out to listeners and industry professionals alike. By using the provided Python script and Tonn’s mastering API, you can achieve professional-quality mastering efficiently, freeing up your time to focus on creativity and promotion.
+
+---
+
+
+# Mix Check Studio - Mix Analysis Tutorial
+
+This guide explains how to use the **Tonn API** to analyze your mixed or mastered tracks, ensuring they are polished and ready for release on streaming platforms.
+
+The code for this tutorial is available in the following code repository: https://github.com/roex-audio/TonnExamples
+
+## What is Mix Check Studio?
+
+Mix Check Studio analyses your music tracks to identify potential issues in your mix or master, providing detailed feedback on loudness, dynamic range, clipping, stereo field, tonal profile, and more. This allows you to make informed adjustments before your music reaches listeners.
+
+## Why Analyse Your Tracks?
+
+Before releasing music, it’s crucial to ensure your tracks meet industry standards. Mix Check Studio helps by highlighting:
+
+- **Clipping issues**: Prevent unwanted distortion.
+- **Dynamic range issues**: Maintain appropriate compression.
+- **Loudness normalisation**: Ensure your music sounds great on Spotify, Apple Music, YouTube, etc.
+- **Stereo field and mono compatibility**: Optimise playback across various devices.
+- **Tonal balance**: Achieve clarity, warmth, and presence in your music.
+
+## Step-by-Step Tutorial
+
+### 1. Prerequisites
+
+Ensure you have:
+
+- An API key from [Tonn API Portal](https://tonn-portal.roexaudio.com).
+- An audio file hosted online (accessible via URL).
+- Python environment setup with `requests` library installed (`pip install requests`).
+
+### 2. Prepare Your Request
+
+Create a payload containing:
+
+```json
+{
+    "mixDiagnosisData": {
+        "audioFileLocation": "https://your-audio-file-location/audiofile.wav",
+        "musicalStyle": "ROCK",
+        "isMaster": true
+    }
+}
+```
+
+Replace the `audioFileLocation` URL with your track's location, choose the appropriate `musicalStyle`, and set `isMaster` accordingly.
+
+### 3. Run the Analysis
+
+Use the provided Python script (`roex_mix_analysis.py`) to submit your track:
+
+```bash
+python roex_mix_analysis.py
+```
+
+### 4. Interpreting Results
+
+Upon running the script, you'll receive detailed output similar to this example:
+
+```
+=== Mix Analysis Top-Level Response ===
+Error: False
+Message: Successfully initiated a diagnosis task.
+
+=== Mix Diagnosis Results ===
+Completion Time: 2025-03-17 11:05:18
+Error Flag: False
+
+--- Payload Details ---
+bit_depth: 24
+clipping: MINOR
+if_master_drc: LESS
+if_master_loudness: LESS
+integrated_loudness_lufs: -8.88
+mono_compatible: True
+musical_style: hip_hop_grime
+peak_loudness_dbfs: 1.3
+phase_issues: False
+sample_rate: 44100
+stereo_field: STEREO_UPMIX
+
+--- Summary ---
+1. Minor clipping detected; use a limiter to control peaks.
+2. Dynamic range is limited; avoid heavy compression.
+3. Loudness exceeds streaming standards by 5.1 dB (Spotify, Tidal, YouTube) and 7.1 dB (Apple Music).
+4. Recommended EQ adjustments: boost low-mid frequencies for warmth; subtle boosts in high-mid and highs for clarity; apply multiband compression to balance tonal profile.
+
+Remember: Use this analysis as guidance. Always trust your ears for final decisions.
+```
+
+### 5. Improving Your Mix
+
+You can use this feedback to go back to the DAW make changes to improve how it sounds based on the recommendations given. For example:
+
+- Adjust your track’s loudness and dynamic range.
+- Correct any minor clipping using a limiter.
+- Enhance the tonal profile and stereo image.
+
+### 6. Next Steps
+
+After addressing the feedback:
+
+- Re-run your mix through Mix Check Studio.
+- Compare results to ensure improvements.
+- Confidently release your music knowing it meets professional standards.
+
+## Support
+
+For further assistance, please visit the [Tonn API Portal](https://tonn-portal.roexaudio.com) or contact our support team.
