@@ -259,23 +259,25 @@ Batch mastering your EP or album ensures a unified and professional sound, makin
 
 # Mix Check Studio - Mix Analysis Tutorial
 
-This guide explains how to use the **Tonn API** to analyze your mixed or mastered tracks, ensuring they are polished and ready for release on streaming platforms.
+This guide explains how to use the **Tonn API** to analyse your mixed or mastered tracks, ensuring they are polished and ready for release on streaming platforms.
 
 The code for this tutorial is available in the following code repository: https://github.com/roex-audio/TonnExamples
 
+Using Tonn API for Mix Analysis leverages the same advanced technology behind RoEx's [Mix Check Studio](https://mixcheckstudio.roexaudio.com), which has already been used by DIY musicians and producers on 100,000's of tracks.
+
 ## What is Mix Check Studio?
 
-Mix Check Studio analyses your music tracks to identify potential issues in your mix or master, providing detailed feedback on loudness, dynamic range, clipping, stereo field, tonal profile, and more. This allows you to make informed adjustments before your music reaches listeners.
+**Mix Check Studio** analyses your music tracks to identify potential issues in your mix or master, providing detailed feedback on loudness, dynamic range, clipping, stereo field, tonal profile, and more. This allows you to make informed adjustments before your music reaches listeners.
 
 ## Why Analyse Your Tracks?
 
-Before releasing music, it’s crucial to ensure your tracks meet industry standards. Mix Check Studio helps by highlighting:
+Before releasing music, it's crucial to ensure your tracks meet industry standards. Mix Check Studio helps by highlighting:
 
-- **Clipping issues**: Prevent unwanted distortion.
-- **Dynamic range issues**: Maintain appropriate compression.
-- **Loudness normalisation**: Ensure your music sounds great on Spotify, Apple Music, YouTube, etc.
-- **Stereo field and mono compatibility**: Optimise playback across various devices.
-- **Tonal balance**: Achieve clarity, warmth, and presence in your music.
+- **Clipping issues**: Detects unwanted distortion or peaks that may degrade audio quality.
+- **Dynamic range issues**: Evaluates compression levels to ensure appropriate dynamics.
+- **Loudness**: Analyses how your track's loudness compares to standards set by Spotify, Apple Music, and YouTube.
+- **Stereo field and mono compatibility**: Assesses stereo imaging, ensuring your music sounds great on all devices.
+- **Tonal balance**: Offers insights to enhance warmth, clarity, and overall sonic presence.
 
 ## Step-by-Step Tutorial
 
@@ -350,7 +352,7 @@ Remember: Use this analysis as guidance. Always trust your ears for final decisi
 
 You can use this feedback to go back to the DAW make changes to improve how it sounds based on the recommendations given. For example:
 
-- Adjust your track’s loudness and dynamic range.
+- Adjust your track's loudness and dynamic range.
 - Correct any minor clipping using a limiter.
 - Enhance the tonal profile and stereo image.
 
@@ -364,4 +366,4 @@ After addressing the feedback:
 
 ## Support
 
-For further assistance, please visit the [Tonn API Portal](https://tonn-portal.roexaudio.com) or contact our support team.
+For further assistance, please visit the [Tonn API Portal](https://tonn-portal.roexaudio.com) or contact our support team at support@roexaudio.com.
