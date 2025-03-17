@@ -91,7 +91,7 @@ def main():
     mixanalysis_payload = {
         "mixDiagnosisData": {
             "audioFileLocation": "https://your-audio-file-location/audio.wav",
-            "musicalStyle": "rock",
+            "musicalStyle": "ROCK",
             "isMaster": True
         }
     }
