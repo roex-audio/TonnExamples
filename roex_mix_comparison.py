@@ -84,39 +84,156 @@ def print_mix_diagnosis_results(diagnosis):
         print("No summary available.")
 
 
-def extract_summary(diagnosis):
+def print_mix_diagnosis_results(diagnosis):
     """
-    Extracts the summary from mix diagnosis results.
+    Pretty-prints the full mix diagnosis results.
+
+    Args:
+        diagnosis (dict): The mix diagnosis results.
+    """
+    if not isinstance(diagnosis, dict):
+        print("Invalid mix diagnosis results.")
+        return
+
+    print("\n=== Full Mix Diagnosis Results ===")
+    completion_time = diagnosis.get("completion_time", "N/A")
+    error_flag = diagnosis.get("error", False)
+    info = diagnosis.get("info", "No additional info")
+    print(f"Completion Time: {completion_time}")
+    print(f"Error Flag: {error_flag}")
+    print(f"Info: {info}")
+
+    payload = diagnosis.get("payload", {})
+    if payload:
+        print("\n--- Payload Details ---")
+        for key, value in payload.items():
+            print(f"{key}: {value}")
+    else:
+        print("No payload details available.")
+
+
+def extract_production_metrics(diagnosis):
+    """
+    Extracts production-related metrics from the diagnosis payload.
+
+    Excludes the 'summary' field.
 
     Args:
         diagnosis (dict): The mix diagnosis results.
 
     Returns:
-        dict: The summary extracted from the payload, or an empty dict if not present.
+        dict: Production metrics.
     """
     payload = diagnosis.get("payload", {})
-    return payload.get("summary", {})
+    production_keys = [
+        "bit_depth", "clipping", "if_master_drc", "if_master_loudness",
+        "if_mix_drc", "if_mix_loudness", "integrated_loudness_lufs", "mix_style",
+        "mono_compatible", "musical_style", "peak_loudness_dbfs", "phase_issues",
+        "sample_rate", "stereo_field"
+    ]
+    metrics = {key: payload.get(key, "N/A") for key in production_keys}
+    return metrics
 
 
-def compare_summaries(summary_a, summary_b):
+def extract_tonal_profile(diagnosis):
     """
-    Compares two summary dictionaries from mix analysis and prints a side-by-side comparison.
+    Extracts the tonal profile from the diagnosis payload.
 
     Args:
-        summary_a (dict): Summary from Mix A.
-        summary_b (dict): Summary from Mix B.
+        diagnosis (dict): The mix diagnosis results.
+
+    Returns:
+        dict: Tonal profile data.
     """
-    print("\n=== Mix Comparison Summary ===")
-    # Create a set of all keys that exist in either summary.
-    all_keys = set(summary_a.keys()).union(summary_b.keys())
+    payload = diagnosis.get("payload", {})
+    return payload.get("tonal_profile", {})
 
-    for key in all_keys:
-        val_a = summary_a.get(key, "N/A")
-        val_b = summary_b.get(key, "N/A")
+
+def smart_compare_value(key, val_a, val_b):
+    """
+    Compares two values and returns formatted (color-coded) strings and a basic interpretation.
+
+    For numeric values, if the difference exceeds a threshold, the values are marked in red.
+    For non-numeric values, any difference is highlighted in red.
+
+    Args:
+        key (str): The field name.
+        val_a: Value from Mix A.
+        val_b: Value from Mix B.
+
+    Returns:
+        tuple: (formatted_val_a, formatted_val_b, interpretation)
+    """
+    # ANSI escape codes for coloring
+    RED = "\033[91m"
+    GREEN = "\033[92m"
+    RESET = "\033[0m"
+
+    # Pre-defined numeric thresholds for specific keys
+    numeric_thresholds = {
+        "integrated_loudness_lufs": 1.0,
+        "peak_loudness_dbfs": 0.5,
+        "bit_depth": 0  # any difference is significant
+    }
+
+    interpretation = ""
+
+    # Try numeric comparison if possible
+    try:
+        num_a = float(val_a)
+        num_b = float(val_b)
+        is_numeric = True
+    except (ValueError, TypeError):
+        is_numeric = False
+
+    if is_numeric:
+        diff = abs(num_a - num_b)
+        threshold = numeric_thresholds.get(key, 0.0)
+        if threshold and diff > threshold:
+            formatted_a = f"{RED}{val_a}{RESET}"
+            formatted_b = f"{RED}{val_b}{RESET}"
+            interpretation = f"Difference of {diff:.2f} exceeds threshold of {threshold}"
+        else:
+            formatted_a = f"{GREEN}{val_a}{RESET}"
+            formatted_b = f"{GREEN}{val_b}{RESET}"
+            if diff > 0:
+                interpretation = f"Difference of {diff:.2f} is within acceptable range."
+            else:
+                interpretation = "Values are identical."
+    else:
+        # For non-numeric values, a simple equality check.
+        if val_a == val_b:
+            formatted_a = f"{GREEN}{val_a}{RESET}"
+            formatted_b = f"{GREEN}{val_b}{RESET}"
+            interpretation = "Values are identical."
+        else:
+            formatted_a = f"{RED}{val_a}{RESET}"
+            formatted_b = f"{RED}{val_b}{RESET}"
+            interpretation = "Values differ."
+
+    return formatted_a, formatted_b, interpretation
+
+
+def compare_dicts_with_smart_diff(dict_a, dict_b, title="Comparison"):
+    """
+    Compares two dictionaries field by field using smart difference analysis,
+    printing color-coded differences and basic interpretations.
+
+    Args:
+        dict_a (dict): Dictionary for Mix A.
+        dict_b (dict): Dictionary for Mix B.
+        title (str): Title for the comparison block.
+    """
+    print(f"\n=== {title} ===")
+    all_keys = set(dict_a.keys()).union(dict_b.keys())
+    for key in sorted(all_keys):
+        val_a = dict_a.get(key, "N/A")
+        val_b = dict_b.get(key, "N/A")
+        formatted_a, formatted_b, interpretation = smart_compare_value(key, val_a, val_b)
         print(f"{key}:")
-        print(f"  Mix A: {val_a}")
-        print(f"  Mix B: {val_b}\n")
-
+        print(f"  Mix A: {formatted_a}")
+        print(f"  Mix B: {formatted_b}")
+        print(f"  Interpretation: {interpretation}\n")
 
 def main():
     """
@@ -148,12 +265,17 @@ def main():
     print("\nFull Diagnosis for Mix B:")
     print_mix_diagnosis_results(diagnosis_b)
 
-    # Extract summary data for comparison.
-    summary_a = extract_summary(diagnosis_a)
-    summary_b = extract_summary(diagnosis_b)
+    # Extract production metrics from each diagnosis.
+    production_metrics_a = extract_production_metrics(diagnosis_a)
+    production_metrics_b = extract_production_metrics(diagnosis_b)
 
-    # Compare the summaries.
-    compare_summaries(summary_a, summary_b)
+    # Compare the production metrics using smart difference analysis.
+    compare_dicts_with_smart_diff(production_metrics_a, production_metrics_b, title="Production Metrics Comparison")
+
+    # Extract and compare tonal profile data.
+    tonal_profile_a = extract_tonal_profile(diagnosis_a)
+    tonal_profile_b = extract_tonal_profile(diagnosis_b)
+    compare_dicts_with_smart_diff(tonal_profile_a, tonal_profile_b, title="Tonal Profile Comparison")
 
 
 if __name__ == "__main__":
