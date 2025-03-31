@@ -367,3 +367,142 @@ After addressing the feedback:
 ## Support
 
 For further assistance, please visit the [Tonn API Portal](https://tonn-portal.roexaudio.com) or contact our support team at support@roexaudio.com.
+
+---
+
+# Tutorial - Tonn API: Compare Two Mixes Using the Tonn API
+
+This guide explains how to use the **Tonn API** to compare two different versions of a mix or reference tracks, allowing you to assess progress, consistency, or alignment with a sonic benchmark.
+
+The code for this tutorial is available in the following repository: https://github.com/roex-audio/TonnExamples
+
+This tool leverages the same technology that powers [Mix Check Studio](https://mixcheckstudio.roexaudio.com), already trusted by DIY musicians and producers for hundreds of thousands of tracks.
+
+## What is Mix Comparison?
+
+**Mix Comparison** allows you to:
+
+- Compare two different versions of your mix to track improvements.
+- Benchmark your mix against a professionally released track.
+
+Using the Tonn API, you'll receive feedback on loudness, dynamic range, stereo image, tonal profile, and technical delivery.
+
+## Why Compare Mixes?
+
+Whether you're refining your sound or preparing a release, comparison helps ensure:
+
+- **Improved sound quality**: Know if your changes are actually better.
+- **Reference-based mixing**: Match the clarity and energy of tracks you admire.
+- **Consistency across versions**: Spot regressions or overprocessing early.
+
+## Step-by-Step Tutorial
+
+### 1. Prerequisites
+
+You’ll need:
+
+- An API key from [Tonn API Portal](https://tonn-portal.roexaudio.com)
+- Two audio files hosted online (public URLs)
+- Python environment with `requests` installed (`pip install requests`)
+
+### 2. Configure the Script
+
+Edit the following values in `compare_mixes.py`:
+
+```python
+mix_a_url = "https://your-audio-file-location/mix_a.wav"
+mix_b_url = "https://your-audio-file-location/mix_b.wav"
+
+musical_style = "POP"  # e.g. techno, pop, hip_hop_grime
+is_master = True         # Set to False if you're comparing unmastered mixes
+```
+
+And don’t forget to insert your Tonn API key:
+
+```python
+API_KEY = "YOUR_API_KEY_HERE"
+```
+
+### 3. Run the Script
+
+Use the terminal:
+
+```bash
+python compare_mixes.py
+```
+
+### 4. Understanding the Output
+
+The script will:
+
+- Analyze both audio files using the `/mixanalysis` endpoint.
+- Extract key technical fields (bit depth, LUFS, mono compatibility, etc.).
+- Show side-by-side, color-coded comparisons.
+- Highlight significant differences with basic interpretation.
+
+Example:
+
+```
+=== Production Metrics Comparison ===
+integrated_loudness_lufs:
+  Mix A: -13.3
+  Mix B: -10.9
+  Interpretation: Difference of 2.4 exceeds threshold of 1.0
+
+mono_compatible:
+  Mix A: False
+  Mix B: True
+  Interpretation: Values differ.
+
+bit_depth:
+  Mix A: 16
+  Mix B: 24
+  Interpretation: Difference of 8 exceeds threshold of 0
+```
+
+You’ll also get a breakdown of tonal profile differences:
+
+```
+=== Tonal Profile Comparison ===
+high_frequency:
+  Mix A: LOW
+  Mix B: MEDIUM
+  Interpretation: Values differ.
+```
+
+### 5. What Gets Compared?
+
+#### Technical Metrics:
+- Bit depth
+- Clipping
+- Loudness (LUFS, peak)
+- DRC evaluations
+- Mono compatibility
+- Stereo field and phase issues
+- Sample rate
+
+#### Tonal Profile:
+- Bass frequency content
+- Low-mid, high-mid, and high frequency energy
+
+### 6. Using the Results
+
+Use the comparison output to:
+
+- Revisit mix decisions (e.g., loudness, stereo spread, EQ)
+- Match a reference track more closely
+- Track whether your changes help or hinder the mix
+
+After you’ve made changes:
+
+- Re-run the script
+- Compare the new version to your previous one or reference
+- Iterate confidently with data-backed decisions
+
+## License & Attribution
+
+This tutorial uses the Tonn API, part of the RoEx platform. These insights are algorithmically generated, and should always be used alongside your ears and taste.
+
+---
+
+Confidently improve your mixes. Try it now.
