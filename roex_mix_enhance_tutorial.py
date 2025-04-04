@@ -5,7 +5,7 @@ import requests
 # -------------------------------------------------------------------
 # Configuration
 # -------------------------------------------------------------------
-BASE_URL = "https://your-api.roexaudio.com"  # e.g. https://tonn.roexaudio.com
+BASE_URL = "https://tonn.roexaudio.com"
 API_KEY = "YOUR_API_KEY_HERE"
 
 HEADERS = {
@@ -69,8 +69,7 @@ def start_mix_enhance(
             "fixLoudnessIssues": fix_loudness,
             "applyMastering": apply_mastering,
             "loudnessPreference": loudness_preference,
-            "stemProcessing": stem_processing,
-            "webhookURL": webhook_url
+            "stemProcessing": stem_processing
         }
     }
 
@@ -126,7 +125,7 @@ def poll_enhanced_track(task_id, max_attempts=20, poll_interval=5):
             try:
                 data = response.json()
                 if not data.get("error", False):
-                    results = data.get("revived_track_tasks_results", {})
+                    results = data.get("revivedTrackTaskResults", {})
                     if results:
                         print("Enhanced track is ready!")
                         return results
@@ -140,7 +139,7 @@ def poll_enhanced_track(task_id, max_attempts=20, poll_interval=5):
             except Exception as e:
                 print(f"Error parsing JSON response: {e}")
                 break
-        elif response.status_code in (404, 503):
+        elif response.status_code in (404, 503, 202):
             # Possibly not ready or still processing
             print(f"Attempt {attempt + 1}/{max_attempts}: status={response.status_code}, still processing...")
         else:
@@ -171,7 +170,7 @@ def main():
     # Start a job. Provide custom flags as needed:
     task_id = start_mix_enhance(
         audio_url=demo_audio_url,
-        musical_style="ROCK",
+        musical_style="HIPHOP_GRIME",
         is_master=False,
         fix_clipping=True,
         fix_drc=True,
@@ -181,7 +180,6 @@ def main():
         apply_mastering=True,
         loudness_preference="STREAMING_LOUDNESS",
         stem_processing=True,  # request stems
-        webhook_url=""  # optional
     )
 
     if not task_id:
@@ -189,7 +187,7 @@ def main():
         return
 
     # Poll for completion
-    results = poll_enhanced_track(task_id, max_attempts=20, poll_interval=5)
+    results = poll_enhanced_track(task_id, max_attempts=50, poll_interval=5)
     if not results:
         print("No results returned. Exiting.")
         return
@@ -201,7 +199,7 @@ def main():
     # Example keys your backend might return:
     #   "preview_url", "enhanced_full_track_url", "stems"
     # Let's attempt to download them if present
-    enhanced_url = results.get("enhanced_full_track_url")
+    enhanced_url = results.get("download_url_revived")
     if enhanced_url:
         download_file(enhanced_url, "enhanced_full_track.wav")
 
