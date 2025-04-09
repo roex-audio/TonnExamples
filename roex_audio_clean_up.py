@@ -26,6 +26,33 @@ def print_audio_cleanup_results(cleanup_results):
     info = cleanup_results.get("info", "None")
     print(f"Info: {info}")
 
+    # If a download URL is available, download the result file
+    download_url = cleanup_results.get("cleaned_audio_file_location")
+    if download_url:
+        print(f"Download URL: {download_url}")
+        download_file(download_url, "cleaned_audio.wav")
+    else:
+        print("No download URL found for the cleaned audio.")
+
+def download_file(url, local_filename):
+    """
+    Downloads a file from the provided URL and saves it locally.
+
+    Args:
+        url (str): The direct URL to the file to be downloaded.
+        local_filename (str): The file path where the downloaded file will be saved.
+    """
+    try:
+        # We use a 'stream=True' request to handle large files in chunks.
+        with requests.get(url, stream=True) as r:
+            r.raise_for_status()  # Raises an HTTPError if the response wasn't 2xx.
+            with open(local_filename, 'wb') as f:
+                # Write the response content in chunks of 8192 bytes to avoid memory overload.
+                for chunk in r.iter_content(chunk_size=8192):
+                    f.write(chunk)
+        print(f"Downloaded file to {local_filename}")
+    except Exception as e:
+        print(f"Error downloading file from {url}: {e}")
 def clean_up_audio(cleanup_payload, headers):
     """
     Send a POST request to the /audio-cleanup endpoint with the provided payload.
