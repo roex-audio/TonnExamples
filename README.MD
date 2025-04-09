@@ -609,3 +609,132 @@ Feel free to adapt and expand this script for your specific workflows. Integrate
 ## Questions or Feedback?
 
 For support, visit our [Tonn Portal](https://tonn-portal.roexaudio.com) or contact our team directly—we’re here to help!
+
+__
+
+
+# Tutorial - Tonn API: Audio Clean-up
+
+In this tutorial, we'll walk through how to use RoEx's **audio cleanup API** to clean up noisy, problematic instrument tracks, specifically vocals. Whether you're a producer, podcaster, or content creator, this tool helps you clean up your recordings quickly and efficiently.
+
+## Why Audio Cleanup?
+
+Audio recordings, especially those captured in uncontrolled environments (like outdoor spaces or mobile phones), often contain unwanted noise or imperfections. These issues can make your track sound unprofessional and detract from the overall listening experience. This is where the **audio cleanup API** can help.
+
+With just a few clicks, the RoEx API will process your audio and clean up background noise, microphone bleed, and other imperfections.
+
+### Common Use Cases:
+- **Outdoor Recordings:** Wind, traffic, and environmental noises often seep into recordings made outdoors. Our API can help clean up these recordings, leaving only the desired sounds.
+- **Phone Recordings:** If you've recorded vocals or instruments using a phone or portable device, there’s a high chance that unwanted noise has been captured. The API can help clean up this noise while maintaining the integrity of the main sound.
+- **Microphone Bleed:** During live performances or multi-microphone setups, sound from other sources can bleed into your recording. The API can isolate and clean up specific instrument groups, ensuring a cleaner sound.
+- **Noisy Recordings:** Sometimes, even in controlled environments, recordings can have hum, hiss, or other unwanted sounds. The API can help reduce these noises and improve the overall sound quality.
+
+## Benefits of Using the RoEx Audio Cleanup API
+
+- **Time-Saving:** Manually cleaning up audio files can be time-consuming. RoEx's API automates the process, saving you hours of work.
+- **High-Quality Results:** The API uses advanced machine learning models and signal processing techniques to clean up your audio without compromising quality.
+- **Versatility:** Whether you're working with vocals, drums, guitars, or strings, the API supports a variety of instrument groups, making it a versatile tool for different audio projects.
+- **Easy to Use:** With just a simple API call, you can submit an audio file for cleanup and download the results in minutes.
+
+## How to Use the Audio Cleanup API
+
+### Step 1: Prepare Your Audio File
+
+Before you start, ensure that your audio file is in either **WAV** or **FLAC** format. These are the only supported formats for cleanup, as they preserve high audio quality, which is necessary for processing.
+
+You can use the API to clean up:
+- **Vocals**
+- **Drums**
+- **Electric and Acoustic Guitars**
+- **Strings**
+- **Percussion**
+- **Backing Vocals**
+
+### Step 2: Make the API Call
+
+You’ll need to send a POST request to the `/audio-cleanup` endpoint. This request will include:
+- **audioFileLocation:** The URL of the audio file you want to clean.
+- **soundSource:** The specific instrument you want to clean (e.g., "VOCAL_GROUP", "SNARE_GROUP").
+
+Here’s a sample payload for cleaning up vocals:
+
+```json
+{
+  "audioCleanupData": {
+    "audioFileLocation": "https://your-audio-file-location/vocal_track.wav",  // Replace with your file URL
+    "soundSource": "VOCAL_GROUP"  // Choose the appropriate group like SNARE_GROUP, E_GUITAR_GROUP, etc.
+  }
+}
+```
+
+### Step 3: Download the Cleaned Audio
+
+Once the API processes the file, it will provide a download link to the cleaned-up audio. You can then download the file to your local machine.
+
+### Step 4: Review the Results
+
+After downloading the cleaned audio, listen to the before-and-after results to evaluate the improvement. You'll notice a cleaner, more professional sound with reduced noise, hums, and unwanted sounds.
+
+## Python Example Script
+
+Here’s a Python script to help you get started with using the RoEx Audio Cleanup API:
+
+```python
+import requests
+import json
+
+BASE_URL = "https://tonn.roexaudio.com"
+API_KEY = "Your_API_Key_Here"
+
+def download_file(url, local_filename):
+    with requests.get(url, stream=True) as r:
+        r.raise_for_status()
+        with open(local_filename, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                f.write(chunk)
+    print(f"Downloaded file to {local_filename}")
+
+def clean_up_audio(payload, headers):
+    cleanup_url = f"{BASE_URL}/audio-cleanup"
+    response = requests.post(cleanup_url, json=payload, headers=headers)
+    return response.json() if response.status_code == 200 else None
+
+def main():
+    cleanup_payload = {
+        "audioCleanupData": {
+            "audioFileLocation": "https://your-audio-file-location/vocal_track.wav",
+            "soundSource": "VOCAL_GROUP"
+        }
+    }
+
+    headers = {
+        "Content-Type": "application/json",
+        "x-api-key": API_KEY
+    }
+
+    response_data = clean_up_audio(cleanup_payload, headers)
+    if response_data:
+        cleanup_results = response_data.get("audioCleanupResults")
+        if cleanup_results:
+            download_url = cleanup_results.get("download_url")
+            if download_url:
+                print(f"Download URL: {download_url}")
+                download_file(download_url, "cleaned_audio.wav")
+```
+
+This script demonstrates how to send a POST request to the API, process the audio file, and download the cleaned results.
+
+## Conclusion
+
+By leveraging the RoEx Audio Cleanup API, you can automate the process of cleaning up your audio files and achieve professional-level results in just a few simple steps. Whether you're working with outdoor recordings, phone recordings, or live performance tracks, this tool will help you save time and produce cleaner, more polished audio.
+
+We hope this tutorial helps you get started with the API. If you have any questions or feedback, feel free to reach out or share your results!
+
+---
+
+### Related Resources:
+
+- [RoEx API Documentation](https://tonn.roexaudio.com/docs)
+- [API Key Registration](https://tonn-portal.roexaudio.com)
+
+Happy audio cleaning! 🎶
