@@ -506,3 +506,106 @@ This tutorial uses the Tonn API, part of the RoEx platform. These insights are a
 ---
 
 Confidently improve your mixes. Try it now.
+
+---
+
+
+# Tutorial Tonn API - Mix Enhance
+
+Welcome to the Mix Enhance tutorial! This guide walks you through quickly enhancing and mastering your audio tracks using RoEx's Mix Enhance technology API. You'll learn how to easily transform existing stereo mixes into polished, studio-quality tracks without needing individual stems.
+
+## What Makes Mix Enhance Special?
+
+- **No Stems Required**: Mix Enhance operates directly on stereo files, saving you from the hassle of exporting separate stems from your DAW.
+- **Studio-Grade Enhancement**: Inspired by classic analog gear like the Pultec EQ and LA-2A Compressor, Mix Enhance instantly adds clarity, warmth, punch, and brightness to your tracks.
+- **Optimized for Streaming**: Automatically adjust your mixes to meet the loudness and quality standards required by popular streaming services like Spotify and Apple Music.
+- **Flexible Stem Separation**: Optionally, Mix Enhance can perform stem separation and return individually processed stems, ideal for reviving old tracks or lost projects.
+
+## What You'll Learn in This Tutorial
+
+- **Preview your mix enhancement** quickly to hear a short sample before committing to a full enhancement.
+- **Fully enhance your mix** by automatically correcting common mixing issues and mastering your track.
+- **Retrieve and download** your enhanced tracks and individual stems effortlessly.
+
+## Getting Started
+
+### Prerequisites
+
+- Python installed on your system (version 3.7 or higher recommended).
+- Your Mix Enhance API Key (obtain from [Tonn Portal](https://tonn-portal.roexaudio.com)).
+
+### Installation
+
+Make sure you have the `requests` library installed:
+
+```bash
+pip install requests
+```
+
+### Using the Tutorial Script
+
+1. **Configure your API Key and Base URL:**
+
+Update these lines in your Python script with your API details:
+
+```python
+BASE_URL = "https://tonn.roexaudio.com"
+API_KEY = "YOUR_API_KEY_HERE"
+```
+
+2. **Specify Your Audio File and Preferences:**
+
+Replace the placeholder audio URL in the script with the URL of the track you want to process. Select the appropriate musical style and set flags to indicate whether you want the API to fix loudness, stereo width, tonal profile, and perform mastering (especially recommended for unmastered mixes).
+
+```python
+demo_audio_url = "https://example.com/path/to/your_track.wav"  # Replace with your audio file URL
+musical_style = "POP"  # Choose from available styles
+fix_loudness = True
+fix_stereo_width = True
+fix_tonal_profile = True
+apply_mastering = True
+```
+
+3. **Run the Tutorial Script:**
+
+Execute the provided Python script:
+
+```bash
+python mix_enhance_tutorial.py
+```
+
+The script performs two steps:
+
+- **Preview Enhancement:** Quickly generates a short sample of your enhanced track.
+- **Full Enhancement:** Applies complete mixing and mastering with detailed fixes, returning the fully enhanced track and optional stems.
+
+### Understanding the Script Workflow
+
+The tutorial script follows these clear steps:
+
+1. **Preview Request:** Sends your audio file URL to the `/mixenhancepreview` endpoint with specified enhancement parameters.
+2. **Polling for Results:** Periodically checks if your preview enhancement is ready.
+3. **Download Preview:** Automatically downloads the preview audio and optional stems.
+4. **Full Enhancement Request:** Sends another request to the `/mixenhance` endpoint for comprehensive enhancement.
+5. **Polling for Final Results:** Checks periodically until the full enhanced track is available.
+6. **Download Final Tracks and Stems:** Downloads your fully enhanced mix along with individually processed stems if requested.
+
+## Example Use Cases
+
+- **Bedroom Producers:** Enhance your mixes to a professional standard quickly, letting you focus more on creativity.
+- **Artists and Labels:** Revive and optimize older tracks for modern streaming platforms without remixing or accessing original sessions.
+- **Mastering Engineers:** Accelerate workflows with automated fixes, allowing more time for creative fine-tuning.
+
+## Tips for Advanced Users
+
+- **Webhooks:** Supply a webhook URL in your requests to receive asynchronous notifications, eliminating the need for manual polling.
+- **Batch Processing:** Adapt the script to handle multiple tracks simultaneously.
+- **Customizing Loudness:** Choose between `STREAMING_LOUDNESS` and `CD_LOUDNESS` settings to meet your distribution needs.
+
+## Next Steps
+
+Feel free to adapt and expand this script for your specific workflows. Integrate it into your music production pipelines and experience how AI-driven technology simplifies audio production.
+
+## Questions or Feedback?
+
+For support, visit our [Tonn Portal](https://tonn-portal.roexaudio.com) or contact our team directly—we’re here to help!
