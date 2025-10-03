@@ -5,8 +5,14 @@ import requests
 # -------------------------------------------------------------------
 # Configuration
 # -------------------------------------------------------------------
+import os
 BASE_URL = "https://tonn.roexaudio.com"
-API_KEY = "YOUR_API_KEY_HERE"
+API_KEY = os.environ.get("TONN_API_KEY", "YOUR_API_KEY_HERE")
+
+if not API_KEY or API_KEY == "YOUR_API_KEY_HERE":
+    print("Error: TONN_API_KEY environment variable not set.")
+    print("GO TO https://tonn-portal.roexaudio.com to get an API key")
+    exit(1)
 
 HEADERS = {
     "Content-Type": "application/json",
@@ -222,8 +228,8 @@ def main():
       6. Download final track (and stems if available)
     """
 
-    # Example input audio file
-    demo_audio_url = "https://example.com/path/to/my_mix.wav"
+    # Example input audio file - use one from test bucket
+    demo_audio_url = "https://storage.googleapis.com/test-bucket-api-roex/album/audio_track_1.mp3"
 
     # =====================================================
     # (A) Start the PREVIEW job

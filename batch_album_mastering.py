@@ -311,7 +311,11 @@ def main():
         # 4. Prepare and send payload to /masteringpreview
         preview_payload = {
             "masteringData": {
-                "trackURL": readable_url,
+                "trackData": [
+                    {
+                        "trackURL": readable_url
+                    }
+                ],
                 "musicalStyle": args.style,
                 "desiredLoudness": args.loudness,
                 "sampleRate": args.sample_rate
@@ -326,9 +330,9 @@ def main():
             response = requests.post(preview_url, json=preview_payload, headers=headers)
             response.raise_for_status()
             data = response.json()
-            task_id = data.get("masteringTaskId")
+            task_id = data.get("mastering_task_id")
             if not task_id:
-                print(f"Error: Missing masteringTaskId in response for {filename}: {data}")
+                print(f"Error: Missing mastering_task_id in response for {filename}: {data}")
                 continue # Skip to next file
             print(f"Mastering preview task created with ID: {task_id}")
         except requests.exceptions.RequestException as e:

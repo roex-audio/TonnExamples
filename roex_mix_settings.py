@@ -4,7 +4,14 @@ import time
 
 # BASE_URL points to the API host. Replace it with your actual API host if different.
 BASE_URL = "https://tonn.roexaudio.com"
-API_KEY = "GO TO https://tonn-portal.roexaudio.com get an API key"
+# Read API Key from environment variable for better security
+import os
+API_KEY = os.environ.get("TONN_API_KEY")
+
+if not API_KEY:
+    print("Error: TONN_API_KEY environment variable not set.")
+    print("GO TO https://tonn-portal.roexaudio.com to get an API key")
+    exit(1)
 
 def print_mix_output_settings(settings):
     """
