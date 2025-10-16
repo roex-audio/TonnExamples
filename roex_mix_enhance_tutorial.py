@@ -160,7 +160,7 @@ def start_mix_enhance(
 # -------------------------------------------------------------------
 # 3) Poll for Results (via /retrieveenhancedtrack)
 # -------------------------------------------------------------------
-def poll_enhanced_track(task_id, max_attempts=50, poll_interval=5):
+def poll_enhanced_track(task_id, max_attempts=70, poll_interval=5):
     """
     Calls /retrieveenhancedtrack in a loop to check if the track is ready.
     Returns the 'revivedTrackTaskResults' dict if successful, otherwise None.
@@ -253,7 +253,7 @@ def main():
         return
 
     # Poll for completion
-    preview_results = poll_enhanced_track(preview_task_id, max_attempts=50, poll_interval=5)
+    preview_results = poll_enhanced_track(preview_task_id, max_attempts=70, poll_interval=5)
     if not preview_results:
         print("No preview results returned. Exiting.")
         return
@@ -288,7 +288,7 @@ def main():
         fix_loudness=True,
         apply_mastering=True,               # For final mastering pass
         loudness_preference="STREAMING_LOUDNESS",
-        stem_processing=True               # Request stems again
+        stem_processing=False               # Request stems again
     )
 
     if not full_task_id:

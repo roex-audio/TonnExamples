@@ -358,7 +358,7 @@ def main():
         # 6. Retrieve Final Master
         final_results = retrieve_final_master(task_id, headers)
         if final_results:
-            final_url = final_results.get('finalMasterTrackURL')
+            final_url = final_results.get('download_url_mastered')
             if final_url:
                 print(f"Final master ready for {filename}. URL: {final_url}")
                 # Construct a local filename based on the original
