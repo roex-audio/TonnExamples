@@ -245,7 +245,7 @@ def main():
         fix_loudness=True,
         apply_mastering=True,               # For a quick preview with mastering
         loudness_preference="STREAMING_LOUDNESS",
-        stem_processing=True               # Also test stem splitting in preview
+        stem_processing=False               # Also test stem splitting in preview
     )
 
     if not preview_task_id:
