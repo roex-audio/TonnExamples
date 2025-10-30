@@ -13,6 +13,62 @@ if not API_KEY:
     print("GO TO https://tonn-portal.roexaudio.com to get an API key")
     exit(1)
 
+def print_audio_effects_settings(track_data):
+    """
+    Pretty-print audio effects settings from trackData array.
+    
+    This function displays the panning, EQ, and compression settings
+    for each track in a readable format.
+    
+    Args:
+        track_data (list): Array of track objects with audio effects settings.
+    """
+    for idx, track in enumerate(track_data, 1):
+        track_url = track.get("trackURL", "Unknown")
+        # Extract just the filename from the URL for cleaner display
+        track_name = track_url.split("/")[-1] if "/" in track_url else track_url
+        
+        print(f"\n{'='*60}")
+        print(f"Track {idx}: {track_name}")
+        print(f"{'='*60}")
+        
+        # Gain
+        gain = track.get("gainDb", 0)
+        print(f"  Gain: {gain:+.1f} dB")
+        
+        # Panning settings
+        panning = track.get("panning_settings", {})
+        if panning:
+            angle = panning.get("panning_angle", 0)
+            position = "Center" if angle == 0 else f"{abs(angle)}deg {'Left' if angle < 0 else 'Right'}"
+            print(f"\n  Panning: {position} ({angle:+d}deg)")
+        
+        # EQ settings
+        eq_settings = track.get("eq_settings", {})
+        if eq_settings:
+            print(f"\n  EQ Settings (6-band Parametric):")
+            for band_num in range(1, 7):
+                band = eq_settings.get(f"band_{band_num}", {})
+                if band:
+                    freq = band.get("centre_freq", 0)
+                    gain = band.get("gain", 0)
+                    q = band.get("q", 0)
+                    print(f"    Band {band_num}: {freq:>6} Hz | Gain: {gain:+5.1f} dB | Q: {q:4.1f}")
+        
+        # Compression settings
+        comp = track.get("compression_settings", {})
+        if comp:
+            threshold = comp.get("threshold", 0)
+            ratio = comp.get("ratio", 1)
+            attack = comp.get("attack_ms", 0)
+            release = comp.get("release_ms", 0)
+            print(f"\n  Compression:")
+            print(f"    Threshold: {threshold:+.1f} dB")
+            print(f"    Ratio:     {ratio:.1f}:1")
+            print(f"    Attack:    {attack:.1f} ms")
+            print(f"    Release:   {release:.1f} ms")
+
+
 def print_mix_output_settings(settings):
     """
     Pretty-print mix output settings for each track.
@@ -148,14 +204,25 @@ def retrieve_final_mix(final_payload, headers):
 
 def main():
     """
-    Main function to handle preview and final mix creation.
+    Main function to handle preview and final mix creation with extensive audio effects.
 
-    This function performs the following steps:
+    This function demonstrates the ROEX TONN API's capabilities for:
+      - Creating preview mixes with AI-driven settings
+      - Applying advanced audio effects (panning, 6-band EQ, compression)
+      - Retrieving final mixes with custom audio processing
+
+    Workflow:
       1. Loads the preview mix payload and sends it to the /mixpreview endpoint.
       2. Polls the /retrievepreviewmix endpoint until the preview mix is ready.
          (Note: If you provided a webhookURL in the preview mix payload, you wouldn't need to poll.)
       3. Prints the preview mix URL, mix output settings, and stem URLs.
-      4. If a final payload file is provided, updates it with the task ID and retrieves the final mix.
+      4. Loads final mix settings with extensive audio effects and retrieves the final mix.
+      
+    Audio Effects Available:
+      - Gain Control: Level adjustment per track (-60 to +12 dB)
+      - Panning: Stereo positioning (-60? to +60?)
+      - 6-Band Parametric EQ: Precise frequency shaping (20Hz - 20kHz)
+      - Compression: Dynamic range control with threshold, ratio, attack, and release
     """
 
     payload_file = "./initial_multitrack_mix_payload.json"
@@ -246,6 +313,15 @@ def main():
         # Update the final mix payload with the task ID from the preview mix.
         if "applyAudioEffectsData" in final_payload:
             final_payload["applyAudioEffectsData"]["multitrackTaskId"] = task_id
+            
+            # Display the audio effects settings being applied
+            track_data = final_payload["applyAudioEffectsData"].get("trackData", [])
+            if track_data:
+                print("\n" + "="*60)
+                print("APPLYING AUDIO EFFECTS TO FINAL MIX")
+                print("="*60)
+                print_audio_effects_settings(track_data)
+                print("\n" + "="*60)
         else:
             print("Error: 'applyAudioEffectsData' key not found in final payload.")
             return

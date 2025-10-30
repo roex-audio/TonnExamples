@@ -1,0 +1,238 @@
+{
+  "_comment": "NOTE: The 'multitrackTaskId' field below is a placeholder. When using roex_mix_settings.py, this value is automatically replaced with the actual task ID from the preview mix. Do not use this JSON file directly with the API without first replacing 'PLACEHOLDER' with a real task ID.",
+  "applyAudioEffectsData": {
+    "multitrackTaskId": "PLACEHOLDER",
+    "trackData": [
+      {
+        "trackURL": "https://storage.googleapis.com/test-bucket-api-roex/masks_test/masks-bass.wav",
+        "gainDb": -2,
+        "panning_settings": {
+          "panning_angle": 0
+        },
+        "eq_settings": {
+          "band_1": {
+            "gain": 3,
+            "q": 1.2,
+            "centre_freq": 45
+          },
+          "band_2": {
+            "gain": -5,
+            "q": 0.8,
+            "centre_freq": 180
+          },
+          "band_3": {
+            "gain": -1,
+            "q": 0.6,
+            "centre_freq": 600
+          },
+          "band_4": {
+            "gain": 2,
+            "q": 1.5,
+            "centre_freq": 1800
+          },
+          "band_5": {
+            "gain": -1,
+            "q": 0.4,
+            "centre_freq": 4500
+          },
+          "band_6": {
+            "gain": -6,
+            "q": 0.3,
+            "centre_freq": 10000
+          }
+        },
+        "compression_settings": {
+          "threshold": -15,
+          "ratio": 5,
+          "attack_ms": 8,
+          "release_ms": 100
+        }
+      },
+      {
+        "trackURL": "https://storage.googleapis.com/test-bucket-api-roex/masks_test/masks-chord.wav",
+        "gainDb": -1,
+        "panning_settings": {
+          "panning_angle": -20
+        },
+        "eq_settings": {
+          "band_1": {
+            "gain": -8,
+            "q": 0.8,
+            "centre_freq": 70
+          },
+          "band_2": {
+            "gain": -1,
+            "q": 0.6,
+            "centre_freq": 300
+          },
+          "band_3": {
+            "gain": 3,
+            "q": 1.5,
+            "centre_freq": 800
+          },
+          "band_4": {
+            "gain": 4,
+            "q": 2.0,
+            "centre_freq": 2500
+          },
+          "band_5": {
+            "gain": 3,
+            "q": 1.0,
+            "centre_freq": 6500
+          },
+          "band_6": {
+            "gain": 2,
+            "q": 0.6,
+            "centre_freq": 13000
+          }
+        },
+        "compression_settings": {
+          "threshold": -24,
+          "ratio": 2.5,
+          "attack_ms": 25,
+          "release_ms": 200
+        }
+      },
+      {
+        "trackURL": "https://storage.googleapis.com/test-bucket-api-roex/masks_test/masks-kick.wav",
+        "gainDb": 1,
+        "panning_settings": {
+          "panning_angle": 0
+        },
+        "eq_settings": {
+          "band_1": {
+            "gain": 5,
+            "q": 1.5,
+            "centre_freq": 55
+          },
+          "band_2": {
+            "gain": -6,
+            "q": 1.0,
+            "centre_freq": 180
+          },
+          "band_3": {
+            "gain": -3,
+            "q": 0.7,
+            "centre_freq": 400
+          },
+          "band_4": {
+            "gain": 4,
+            "q": 2.0,
+            "centre_freq": 2800
+          },
+          "band_5": {
+            "gain": 1,
+            "q": 0.8,
+            "centre_freq": 5500
+          },
+          "band_6": {
+            "gain": -8,
+            "q": 0.3,
+            "centre_freq": 11000
+          }
+        },
+        "compression_settings": {
+          "threshold": -10,
+          "ratio": 8,
+          "attack_ms": 1,
+          "release_ms": 40
+        }
+      },
+      {
+        "trackURL": "https://storage.googleapis.com/test-bucket-api-roex/masks_test/masks-percssion.wav",
+        "gainDb": -3,
+        "panning_settings": {
+          "panning_angle": 35
+        },
+        "eq_settings": {
+          "band_1": {
+            "gain": -10,
+            "q": 0.6,
+            "centre_freq": 50
+          },
+          "band_2": {
+            "gain": -4,
+            "q": 0.8,
+            "centre_freq": 200
+          },
+          "band_3": {
+            "gain": 2,
+            "q": 1.2,
+            "centre_freq": 1200
+          },
+          "band_4": {
+            "gain": 4,
+            "q": 1.5,
+            "centre_freq": 3500
+          },
+          "band_5": {
+            "gain": 5,
+            "q": 1.0,
+            "centre_freq": 7500
+          },
+          "band_6": {
+            "gain": 4,
+            "q": 0.6,
+            "centre_freq": 16000
+          }
+        },
+        "compression_settings": {
+          "threshold": -18,
+          "ratio": 3.5,
+          "attack_ms": 3,
+          "release_ms": 45
+        }
+      },
+      {
+        "trackURL": "https://storage.googleapis.com/test-bucket-api-roex/masks_test/masks-synth.wav",
+        "gainDb": -6,
+        "panning_settings": {
+          "panning_angle": 20
+        },
+        "eq_settings": {
+          "band_1": {
+            "gain": -7,
+            "q": 0.8,
+            "centre_freq": 65
+          },
+          "band_2": {
+            "gain": 2,
+            "q": 1.0,
+            "centre_freq": 350
+          },
+          "band_3": {
+            "gain": 3,
+            "q": 1.2,
+            "centre_freq": 1000
+          },
+          "band_4": {
+            "gain": 4,
+            "q": 1.5,
+            "centre_freq": 2200
+          },
+          "band_5": {
+            "gain": 5,
+            "q": 1.0,
+            "centre_freq": 5500
+          },
+          "band_6": {
+            "gain": 3,
+            "q": 0.7,
+            "centre_freq": 11000
+          }
+        },
+        "compression_settings": {
+          "threshold": -25,
+          "ratio": 2,
+          "attack_ms": 30,
+          "release_ms": 200
+        }
+      }
+    ],
+    "returnStems": false,
+    "createMaster": true,
+    "desiredLoudness": "LOUD",
+    "sampleRate": "48000",
+    "webhookURL": "https://webhook-test-786984745538.europe-west1.run.app"
+  }
+}

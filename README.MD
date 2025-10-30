@@ -2,6 +2,24 @@
 <!-- focus: false -->
 ![tutorial-icon](https://img.icons8.com/cotton/128/000000/abc.png)
 
+# 🎚️ Advanced Audio Effects Now Available!
+
+The Tonn API now supports **extensive per-track audio processing** for professional mixing:
+
+- **Panning**: Position tracks in stereo field (-60° to +60°)
+- **6-Band Parametric EQ**: Precise frequency shaping (20Hz - 20kHz)
+- **Compression**: Dynamic range control with threshold, ratio, attack & release
+- **Gain Control**: Level adjustment per track (-60 to +12 dB)
+
+📘 **See [AUDIO_EFFECTS_GUIDE.md](AUDIO_EFFECTS_GUIDE.md) for complete documentation and examples**
+
+**Example Files:**
+- `final_mix_settings.json` - Standard balanced mix
+- `final_mix_settings_alternative.json` - Alternative processing approach
+- `roex_mix_settings.py` - Updated script with audio effects visualization
+
+---
+
 # Tutorial - Tonn API: Automating Audio Mixing
 
 ## Introduction
