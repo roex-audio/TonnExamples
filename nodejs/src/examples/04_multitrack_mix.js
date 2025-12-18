@@ -28,7 +28,7 @@ async function startMixPreview(client, mixData) {
   const response = await client.post('/mixpreview', mixData);
 
   if (response && !response.error) {
-    const taskId = response.mix_task_id;
+    const taskId = response.multitrack_task_id;
     console.log(`✓ Mix task created. Task ID: ${taskId}`);
     return taskId;
   } else {
@@ -40,20 +40,19 @@ async function startMixPreview(client, mixData) {
 /**
  * Poll for mix preview result.
  */
-async function pollMixPreview(client, taskId, outputFormat, sampleRate) {
+async function pollMixPreview(client, taskId) {
   const payload = {
-    finalMixRequest: {
-      mixTaskId: taskId,
-      outputFormat,
-      sampleRate
+    multitrackData: {
+      multitrackTaskId: taskId,
+      retrieveFXSettings: true
     }
   };
 
   return client.pollForResult({
-    endpoint: '/retrievefinalmix',
+    endpoint: '/retrievepreviewmix',
     payload,
-    resultKey: 'finalMixTaskResults',
-    maxAttempts: 30,
+    resultKey: 'previewMixTaskResults',
+    maxAttempts: 40,
     pollInterval: 5000
   });
 }
@@ -86,10 +85,11 @@ async function main() {
   console.log('='.repeat(60));
 
   // Summary of the job
-  const stems = mixData.tracks || [];
-  console.log(`\nStems: ${stems.length} tracks`);
-  for (const stem of stems) {
-    console.log(`  - ${stem.groupName || 'Unknown'}: ${stem.audioFileLocation?.split('/').pop() || 'No file'}`);
+  const trackData = mixData.multitrackData?.trackData || [];
+  console.log(`\nStems: ${trackData.length} tracks`);
+  for (const track of trackData) {
+    const filename = track.trackURL?.split('/').pop() || 'No file';
+    console.log(`  - ${track.instrumentGroup || 'Unknown'}: ${filename}`);
   }
 
   // Start the mix preview
@@ -101,10 +101,8 @@ async function main() {
 
   // Poll for results
   console.log('\n⏳ Processing stems...');
-  const outputFormat = mixData.outputFormat || 'wav';
-  const sampleRate = mixData.sampleRate || 48000;
 
-  const results = await pollMixPreview(client, taskId, outputFormat, sampleRate);
+  const results = await pollMixPreview(client, taskId);
 
   if (!results) {
     console.error('\nMix timed out or failed.');
@@ -115,10 +113,10 @@ async function main() {
   console.log(`  Status: ${results.status || 'Unknown'}`);
 
   // Download the final mix
-  const downloadUrl = results.download_url_final_mix || results.download_url_preview;
+  const downloadUrl = results.download_url_preview_mixed || results.download_url_final_mix;
   if (downloadUrl) {
-    const filename = `multitrack_mix_output.${outputFormat}`;
-    console.log(`\n📥 Downloading final mix...`);
+    const filename = 'multitrack_mix_output.mp3';
+    console.log('\n📥 Downloading mix...');
     await client.downloadFile(downloadUrl, filename);
   } else {
     console.log('\n⚠️  No download URL in response');

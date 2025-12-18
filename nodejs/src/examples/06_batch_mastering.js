@@ -24,18 +24,19 @@ const DEFAULT_PAYLOAD = resolve(__dirname, '../../payloads/album_mastering.json'
  * Process a single track for mastering.
  */
 async function masterTrack(client, trackData, index, total, outputDir) {
-  const trackName = basename(trackData.audioFileLocation).replace(/\.[^.]+$/, '');
+  // Support both trackURL (payload format) and audioFileLocation (API format)
+  const audioUrl = trackData.trackURL || trackData.audioFileLocation;
+  const trackName = basename(audioUrl).replace(/\.[^.]+$/, '');
   console.log(`\n--- Track ${index + 1}/${total}: ${trackName} ---`);
 
   // Step 1: Start mastering preview
   console.log('📤 Starting mastering preview...');
   const previewPayload = {
-    masterTrackData: {
-      audioFileLocation: trackData.audioFileLocation,
+    masteringData: {
+      trackData: [{ trackURL: audioUrl }],
       musicalStyle: trackData.musicalStyle || 'POP',
-      isMaster: false,
-      userSelectedMasteringPresetLevel: trackData.masteringPresetLevel || 'moderate',
-      webhookURL: trackData.webhookURL || ''
+      desiredLoudness: trackData.desiredLoudness || 'MEDIUM',
+      sampleRate: trackData.sampleRate || '44100'
     }
   };
 
@@ -51,13 +52,13 @@ async function masterTrack(client, trackData, index, total, outputDir) {
   // Step 2: Poll for preview result
   console.log('⏳ Waiting for preview...');
   const pollPayload = {
-    masterTrackData: { masteringTaskId }
+    masteringData: { masteringTaskId }
   };
 
   const previewResult = await client.pollForResult({
     endpoint: '/retrievepreviewmaster',
     payload: pollPayload,
-    resultKey: 'masteringTaskResults',
+    resultKey: 'previewMasterTaskResults',
     maxAttempts: 30,
     pollInterval: 5000
   });
@@ -74,22 +75,14 @@ async function masterTrack(client, trackData, index, total, outputDir) {
     await client.downloadFile(previewUrl, previewFilename);
   }
 
-  // Step 3: Approve and get final master
-  console.log('📤 Approving for final master...');
+  // Step 3: Get final master
+  console.log('📤 Retrieving final master...');
   const finalPayload = {
-    masterTrackData: {
-      masteringTaskId,
-      approved: true
-    }
+    masteringData: { masteringTaskId }
   };
 
-  const finalResult = await client.pollForResult({
-    endpoint: '/retrievefinalmaster',
-    payload: finalPayload,
-    resultKey: 'masteringTaskResults',
-    maxAttempts: 30,
-    pollInterval: 5000
-  });
+  const finalResponse = await client.post('/retrievefinalmaster', finalPayload);
+  const finalResult = finalResponse?.finalMasterTaskResults;
 
   if (!finalResult) {
     console.error('❌ Final master timed out');
@@ -120,16 +113,17 @@ async function main() {
 
   console.log(`📂 Loading payload from: ${payloadPath}`);
 
-  let albumData;
+  let tracks;
   try {
     const content = await readFile(payloadPath, 'utf-8');
-    albumData = JSON.parse(content);
+    const albumData = JSON.parse(content);
+    // Support both array format and object with tracks property
+    tracks = Array.isArray(albumData) ? albumData : (albumData.tracks || []);
   } catch (error) {
     console.error(`Error reading payload file: ${error.message}`);
     process.exit(1);
   }
 
-  const tracks = albumData.tracks || [];
   if (tracks.length === 0) {
     console.error('Error: No tracks found in payload');
     process.exit(1);
