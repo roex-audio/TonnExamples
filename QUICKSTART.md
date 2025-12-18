@@ -137,8 +137,42 @@ const response = await client.post('/mixanalysis', {
 });
 ```
 
+## Common Issues
+
+### "TONN_API_KEY environment variable not set"
+
+Make sure you've set your API key:
+
+```bash
+export TONN_API_KEY=your_api_key_here
+```
+
+Or create a `.env` file in the project root:
+
+```
+TONN_API_KEY=your_api_key_here
+```
+
+### "File not found"
+
+Use absolute paths or make sure you're in the correct directory:
+
+```bash
+# Absolute path (recommended)
+python 01_mix_analysis.py /Users/you/Music/track.wav POP
+
+# Or relative from examples directory
+cd python/examples
+python 01_mix_analysis.py ../../my_track.wav POP
+```
+
+### More Issues?
+
+See the full [Troubleshooting Guide](docs/TROUBLESHOOTING.md).
+
 ## Need Help?
 
+- [Troubleshooting Guide](docs/TROUBLESHOOTING.md)
 - [Full API Documentation](https://tonn-portal.roexaudio.com)
 - [Python Examples README](python/README.md)
 - [Node.js Examples README](nodejs/README.md)

@@ -24,6 +24,19 @@ Each track requires:
 - **sampleRate**: Optional, defaults to "44100"
 - **webhookURL**: Optional URL to receive API callbacks
 
+## What to Expect
+
+When you run batch mastering, here's what happens for each track:
+
+1. **Upload** (~5 seconds) - Track uploaded to cloud storage
+2. **Preview** (~30-60 seconds) - Mastering preview created
+3. **Final Master** (~30 seconds) - Full quality master generated
+4. **Download** - Mastered file saved
+
+**Typical runtime:** ~2 minutes per track.
+
+For a 5-track EP, expect approximately 10 minutes total.
+
 ## Running the Batch Mastering Script
 
 ```bash

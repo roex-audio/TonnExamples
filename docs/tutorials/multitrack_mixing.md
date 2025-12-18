@@ -136,6 +136,52 @@ Once you're happy with the preview mix, you can send adjustments for individual 
 }
 ```
 
+## What to Expect
+
+When you run the multitrack mix, here's what happens:
+
+1. **Upload** - Your stems are validated
+2. **Processing** (~1-2 minutes) - AI analyzes stems and creates mix
+3. **Download** - Preview mix saved to current directory
+
+**Typical runtime:** 1-3 minutes depending on number of stems.
+
+### Example Success Output
+
+```
+📂 Loading payload from: payloads/multitrack_mix.json
+
+============================================================
+MULTITRACK MIX
+============================================================
+
+Stems: 5 tracks
+  - BASS_GROUP: masks-bass.wav
+  - SYNTH_GROUP: masks-chord.wav
+  - KICK_GROUP: masks-kick.wav
+  - PERCS_GROUP: masks-percssion.wav
+  - SYNTH_GROUP: masks-synth.wav
+
+🎚️  Starting multitrack mix preview...
+✓ Mix task created. Task ID: 77d7a185-fa42...
+
+⏳ Processing stems...
+  Attempt 1/40: MIX_TASK_PENDING
+  Attempt 5/40: MIX_TASK_ANALYSIS
+  Attempt 15/40: MIX_TASK_APPLY_FX
+✓ Processing complete!
+
+📊 Mix Results:
+  Status: MIX_TASK_PREVIEW_COMPLETED
+
+📥 Downloading mix...
+✓ Downloaded: multitrack_mix_output.mp3
+
+============================================================
+✅ Multitrack Mix Complete!
+============================================================
+```
+
 ## Running the Example
 
 Use the provided Python script:

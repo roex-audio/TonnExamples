@@ -20,6 +20,16 @@ Welcome to the Mix Enhance tutorial! This guide walks you through quickly enhanc
 - Python installed on your system (version 3.7 or higher recommended)
 - Your API Key from [tonn-portal.roexaudio.com](https://tonn-portal.roexaudio.com)
 
+## What to Expect
+
+When you run the enhancement, here's what happens:
+
+1. **Preview** (~60 seconds) - Creates a quick preview of the enhanced track
+2. **Full Enhancement** (~2-3 minutes) - Applies all fixes and mastering
+3. **Download** - Enhanced files saved to current directory
+
+**Typical runtime:** 3-5 minutes total.
+
 ## Running the Example
 
 ```bash

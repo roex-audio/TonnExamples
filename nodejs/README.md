@@ -183,3 +183,15 @@ export TONN_API_KEY=your_api_key_here
 ### API timeout
 
 Some operations take time. The examples poll automatically, but for very long tasks you may need to increase `maxAttempts` in the polling options.
+
+### "fetch is not defined"
+
+Make sure you're using Node.js 18 or later:
+
+```bash
+node --version  # Should be v18.0.0 or higher
+```
+
+### More Issues?
+
+See the full [Troubleshooting Guide](../docs/TROUBLESHOOTING.md).

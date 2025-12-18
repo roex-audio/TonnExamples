@@ -25,6 +25,45 @@ Before releasing music, it's crucial to ensure your tracks meet industry standar
 - **Stereo field and mono compatibility**: Assesses stereo imaging, ensuring your music sounds great on all devices
 - **Tonal balance**: Offers insights to enhance warmth, clarity, and overall sonic presence
 
+## What to Expect
+
+When you run the analysis, here's what happens:
+
+1. **Upload** (~5 seconds) - Your file is uploaded to secure cloud storage
+2. **Analysis** (~10-30 seconds) - AI analyzes your track
+3. **Results** - Detailed feedback displayed in your terminal
+
+**Typical runtime:** 15-45 seconds depending on file size.
+
+### Example Success Output
+
+```
+📤 Uploading my_track.wav...
+✓ Upload URLs obtained successfully
+✓ File uploaded successfully
+
+🔍 Analyzing your mix...
+✅ Analysis complete
+
+============================================================
+MIX DIAGNOSIS RESULTS
+============================================================
+
+--- Technical Details ---
+  Bit Depth: 24
+  Sample Rate: 44100
+  Integrated Loudness (LUFS): -14.2
+  Peak Loudness (dBFS): -1.0
+  Clipping: NONE
+  Stereo Field: STEREO
+  Mono Compatible: True
+
+--- Recommendations ---
+  1. Loudness is appropriate for streaming platforms
+  2. Good dynamic range preserved
+  3. No clipping detected
+```
+
 ## Running the Analysis
 
 ```bash

@@ -7,6 +7,13 @@ This module handles API key loading and base URL configuration.
 import os
 import sys
 
+# Load .env file if present (same behavior as Node.js dotenv)
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass  # python-dotenv not installed, that's fine
+
 # Base URL for the Tonn API
 BASE_URL = "https://tonn.roexaudio.com"
 

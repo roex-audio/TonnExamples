@@ -7,14 +7,12 @@ This folder contains Python examples for integrating with the Tonn API for autom
 ### 1. Install Dependencies
 
 ```bash
-pip install requests
-```
-
-Or install all dependencies from the project root:
-
-```bash
 pip install -r ../requirements.txt
 ```
+
+This installs:
+- `requests` - HTTP client
+- `python-dotenv` - Load `.env` files automatically
 
 ### 2. Set Your API Key
 
@@ -115,8 +113,42 @@ When analyzing or processing audio, specify a musical style:
 - `CLASSICAL`
 - And more...
 
+## Troubleshooting
+
+### "ModuleNotFoundError: No module named 'requests'"
+
+```bash
+pip install -r ../requirements.txt
+```
+
+### "ModuleNotFoundError: No module named 'shared'"
+
+Make sure you're running from the `examples/` directory:
+
+```bash
+cd python/examples
+python 01_mix_analysis.py ...
+```
+
+### "TONN_API_KEY environment variable not set"
+
+Set your API key or create a `.env` file in the project root:
+
+```bash
+# Option 1: Environment variable
+export TONN_API_KEY=your_key_here
+
+# Option 2: Create .env file
+echo "TONN_API_KEY=your_key_here" > ../../.env
+```
+
+### More Issues?
+
+See the full [Troubleshooting Guide](../docs/TROUBLESHOOTING.md).
+
 ## Need Help?
 
+- [Troubleshooting Guide](../docs/TROUBLESHOOTING.md)
 - [Full API Documentation](https://tonn-portal.roexaudio.com)
 - [Audio Effects Guide](../docs/AUDIO_EFFECTS_GUIDE.md)
 - Contact: support@roexaudio.com
