@@ -109,7 +109,6 @@ ffmpeg -i input.m4a -acodec pcm_s16le output.wav
 
 **Fix:**
 - Wait a few more minutes (high traffic periods)
-- Check [status.roexaudio.com](https://status.roexaudio.com) for outages
 - Contact support if stuck for more than 10 minutes
 
 ---
@@ -229,8 +228,4 @@ If you've tried the above and still have issues:
    - Which script you ran
    - Your audio file format and size
    - Python/Node.js version
-
-### API Status
-
-Check for service outages: [status.roexaudio.com](https://status.roexaudio.com)
 
