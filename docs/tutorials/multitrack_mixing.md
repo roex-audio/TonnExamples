@@ -1,0 +1,204 @@
+# Tutorial: Automating Audio Mixing with the Tonn API
+
+## Introduction
+
+Imagine you have multiple audio tracks recorded separately—instruments like drums, bass, guitar, plus vocals—and you need a professional mix that balances them seamlessly. The **Tonn API** allows you to automate this process, ensuring clarity, depth, and consistency in your audio mix.
+
+This guide will walk you through:
+- Creating a **preview mix** to test your setup
+- Polling for **mix status updates** so you know when it's ready
+- Using **webhooks** instead of polling for real-time updates
+- Retrieving the **final mix** for your production
+- Extracting **audio effect settings** for fine-tuning
+- Adjusting **track levels** in decibels before finalizing the mix
+
+## Why Use the Tonn API?
+
+Mixing music manually can be time-consuming and technically challenging. Whether you're an independent musician, producer, or developer integrating audio features into an application, the Tonn API provides an easy way to get professional-quality mixes in just a few steps.
+
+## Prerequisites
+
+Before you begin, make sure you have:
+- Python installed on your system
+- The `requests` library (`pip install requests`)
+- A valid API key from [tonn-portal.roexaudio.com](https://tonn-portal.roexaudio.com)
+
+## Base API URL
+
+All API requests should be made to:
+
+```
+https://tonn.roexaudio.com
+```
+
+## Step 1: Creating a Preview Mix
+
+The first step is to send your tracks to the API and create a preview mix. This mix lets you hear how your tracks sound together before committing to a final mix.
+
+### How It Works
+
+When you send a `POST` request to `/mixpreview`, the API takes your tracks, applies professional mixing techniques, and generates a preview mix. This step doesn't consume any credits, allowing you to tweak and experiment freely.
+
+Including a `webhookURL` in your request payload is **mandatory**. This ensures you receive a notification when the preview mix is ready, eliminating the need for polling.
+
+### Endpoint Details
+
+- **Endpoint**: `POST /mixpreview`
+- **Consumes**: `application/json`
+- **Response Codes**:
+  - `200`: Success, returns `multitrack_task_id`
+  - `400`: Bad Request (Invalid input)
+  - `401`: Unauthorized (API key missing/invalid)
+  - `500`: Internal Server Error
+
+### Example JSON Payload
+
+```json
+{
+  "multitrackData": {
+    "trackData": [
+      {
+        "trackURL": "https://example.com/vocals.wav",
+        "instrumentGroup": "VOCAL_GROUP",
+        "presenceSetting": "LEAD",
+        "panPreference": "CENTRE",
+        "reverbPreference": "LOW"
+      },
+      {
+        "trackURL": "https://example.com/drums.wav",
+        "instrumentGroup": "DRUMS_GROUP",
+        "presenceSetting": "NORMAL",
+        "panPreference": "CENTRE",
+        "reverbPreference": "NONE"
+      }
+    ],
+    "musicalStyle": "POP",
+    "returnStems": false,
+    "sampleRate": 44100,
+    "webhookURL": "https://example.com/webhook"
+  }
+}
+```
+
+## Step 2: Polling for Preview Mix Completion
+
+Polling is generally not required since webhooks provide real-time updates. However, you can use polling as a backup method for debugging or verifying status manually.
+
+### Retrieving Mix Output Settings
+
+Once the preview mix is complete, the API returns **mix output settings** for each track, including:
+- Dynamic range compression (DRC) settings
+- Equalization (EQ) settings
+- Gain adjustments
+- Panning preferences
+
+#### Example of Mix Output Settings
+
+```
+Track: masks-bass.wav
+  drc_settings:
+    attack_ms: 0.074
+    ratio: 1.8
+    release_ms: 0.022
+    threshold: -3.89
+  eq_settings:
+    band_1: {"centre_freq": 46.5, "gain": -1.69, "q": 2.66}
+    band_2: {"centre_freq": 96.69, "gain": -2.73, "q": 2.42}
+  gain_settings:
+    gain_db: -11.8
+```
+
+These settings allow you to fine-tune the mix before finalizing it.
+
+## Step 3: Adjusting Track Levels & Retrieving the Final Mix
+
+Once you're happy with the preview mix, you can send adjustments for individual track levels before retrieving the final mix.
+
+### Example JSON Payload
+
+```json
+{
+  "applyAudioEffectsData": {
+    "multitrackTaskId": "TASK_ID_HERE",
+    "trackData": [
+      {
+        "trackURL": "https://example.com/vocals.wav",
+        "gainDb": 0.0
+      },
+      {
+        "trackURL": "https://example.com/drums.wav",
+        "gainDb": -2.0
+      }
+    ],
+    "returnStems": false,
+    "sampleRate": 44100
+  }
+}
+```
+
+## What to Expect
+
+When you run the multitrack mix, here's what happens:
+
+1. **Upload** - Your stems are validated
+2. **Processing** (~1-2 minutes) - AI analyzes stems and creates mix
+3. **Download** - Preview mix saved to current directory
+
+**Typical runtime:** 1-3 minutes depending on number of stems.
+
+### Example Success Output
+
+```
+📂 Loading payload from: payloads/multitrack_mix.json
+
+============================================================
+MULTITRACK MIX
+============================================================
+
+Stems: 5 tracks
+  - BASS_GROUP: masks-bass.wav
+  - SYNTH_GROUP: masks-chord.wav
+  - KICK_GROUP: masks-kick.wav
+  - PERCS_GROUP: masks-percssion.wav
+  - SYNTH_GROUP: masks-synth.wav
+
+🎚️  Starting multitrack mix preview...
+✓ Mix task created. Task ID: 77d7a185-fa42...
+
+⏳ Processing stems...
+  Attempt 1/40: MIX_TASK_PENDING
+  Attempt 5/40: MIX_TASK_ANALYSIS
+  Attempt 15/40: MIX_TASK_APPLY_FX
+✓ Processing complete!
+
+📊 Mix Results:
+  Status: MIX_TASK_PREVIEW_COMPLETED
+
+📥 Downloading mix...
+✓ Downloaded: multitrack_mix_output.mp3
+
+============================================================
+✅ Multitrack Mix Complete!
+============================================================
+```
+
+## Running the Example
+
+Use the provided Python script:
+
+```bash
+cd python/examples
+python 04_multitrack_mix.py
+```
+
+## Conclusion
+
+By following these steps, you can effortlessly automate professional-quality mixing with the **Tonn API**:
+
+1. Start with a **preview mix**
+2. Use **webhooks** to receive real-time notifications when the mix is ready
+3. Extract **mix output settings** to analyze how the API processed each track
+4. Adjust **track levels** to refine the final mix
+
+Whether you're developing a music app or mixing tracks at scale, this API streamlines your workflow. For more customization, check out the [Audio Effects Guide](../AUDIO_EFFECTS_GUIDE.md)!
+

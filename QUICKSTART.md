@@ -1,0 +1,179 @@
+# Quick Start Guide
+
+Get up and running with the Tonn API in 5 minutes.
+
+## Step 1: Get Your API Key
+
+1. Go to [tonn-portal.roexaudio.com](https://tonn-portal.roexaudio.com)
+2. Sign up or log in
+3. Copy your API key
+
+## Step 2: Choose Your Language
+
+### Python
+
+```bash
+# Clone the repo
+git clone https://github.com/roex-audio/TonnExamples.git
+cd TonnExamples
+
+# Install dependencies
+pip install requests
+
+# Set your API key
+export TONN_API_KEY=your_api_key_here
+
+# Run an example
+cd python/examples
+python 01_mix_analysis.py /path/to/track.wav POP
+```
+
+### Node.js
+
+```bash
+# Clone the repo
+git clone https://github.com/roex-audio/TonnExamples.git
+cd TonnExamples/nodejs
+
+# Install dependencies
+npm install
+
+# Set your API key
+export TONN_API_KEY=your_api_key_here
+
+# Run an example
+node src/examples/01_mix_analysis.js /path/to/track.wav POP
+```
+
+## Step 3: See the Results
+
+You'll see output like:
+
+```
+📤 Uploading track.wav...
+✓ Upload URLs obtained successfully
+✓ File uploaded successfully
+
+🔍 Analyzing your mix...
+✅ Analysis complete
+
+============================================================
+MIX DIAGNOSIS RESULTS
+============================================================
+
+--- Technical Details ---
+  Bit Depth: 24
+  Sample Rate: 44100
+  Integrated Loudness (LUFS): -14.2
+  Peak Loudness (dBFS): -1.0
+  Stereo Field: STEREO
+  Mono Compatible: True
+
+--- Recommendations ---
+  1. Loudness is appropriate for streaming platforms
+  2. Good dynamic range preserved
+  ...
+```
+
+## What's Next?
+
+### Try More Examples
+
+| Example | What it does |
+|---------|--------------|
+| `01_mix_analysis` | Analyze a mix for technical issues |
+| `02_mix_comparison` | Compare two mixes side-by-side |
+| `03_mix_enhance` | Auto-enhance a stereo mix |
+| `04_multitrack_mix` | Mix multiple stems together |
+| `05_audio_cleanup` | Clean up noisy recordings |
+| `06_batch_mastering` | Master an entire album |
+
+### Read the Tutorials
+
+- [Multitrack Mixing Tutorial](docs/tutorials/multitrack_mixing.md)
+- [Batch Mastering Tutorial](docs/tutorials/batch_mastering.md)
+- [Mix Analysis Tutorial](docs/tutorials/mix_analysis.md)
+- [Audio Effects Guide](docs/AUDIO_EFFECTS_GUIDE.md)
+
+### Build Your Own Integration
+
+**Python:**
+
+```python
+from shared import TonnClient
+
+client = TonnClient()
+
+# Upload your audio file
+url = client.upload_local_file("my_track.wav")
+
+# Call any API endpoint
+response = client.post("/mixanalysis", {
+    "mixDiagnosisData": {
+        "audioFileLocation": url,
+        "musicalStyle": "POP",
+        "isMaster": False
+    }
+})
+```
+
+**Node.js:**
+
+```javascript
+import { TonnClient } from './src/shared/client.js';
+
+const client = new TonnClient();
+
+// Upload your audio file
+const url = await client.uploadLocalFile('my_track.wav');
+
+// Call any API endpoint
+const response = await client.post('/mixanalysis', {
+    mixDiagnosisData: {
+        audioFileLocation: url,
+        musicalStyle: 'POP',
+        isMaster: false
+    }
+});
+```
+
+## Common Issues
+
+### "TONN_API_KEY environment variable not set"
+
+Make sure you've set your API key:
+
+```bash
+export TONN_API_KEY=your_api_key_here
+```
+
+Or create a `.env` file in the project root:
+
+```
+TONN_API_KEY=your_api_key_here
+```
+
+### "File not found"
+
+Use absolute paths or make sure you're in the correct directory:
+
+```bash
+# Absolute path (recommended)
+python 01_mix_analysis.py /Users/you/Music/track.wav POP
+
+# Or relative from examples directory
+cd python/examples
+python 01_mix_analysis.py ../../my_track.wav POP
+```
+
+### More Issues?
+
+See the full [Troubleshooting Guide](docs/TROUBLESHOOTING.md).
+
+## Need Help?
+
+- [Troubleshooting Guide](docs/TROUBLESHOOTING.md)
+- [Full API Documentation](https://tonn-portal.roexaudio.com)
+- [Python Examples README](python/README.md)
+- [Node.js Examples README](nodejs/README.md)
+- Email: support@roexaudio.com

@@ -1,0 +1,31 @@
+{
+  "name": "tonn-api-examples",
+  "version": "1.0.0",
+  "description": "Node.js examples for the Tonn API - audio mixing, mastering, and analysis",
+  "type": "module",
+  "scripts": {
+    "example:analysis": "node src/examples/01_mix_analysis.js",
+    "example:comparison": "node src/examples/02_mix_comparison.js",
+    "example:enhance": "node src/examples/03_mix_enhance.js",
+    "example:multitrack": "node src/examples/04_multitrack_mix.js",
+    "example:cleanup": "node src/examples/05_audio_cleanup.js",
+    "example:mastering": "node src/examples/06_batch_mastering.js"
+  },
+  "keywords": [
+    "audio",
+    "mixing",
+    "mastering",
+    "tonn",
+    "roex",
+    "api"
+  ],
+  "author": "RoEx Audio",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.3.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+
